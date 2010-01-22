@@ -106,11 +106,68 @@
 	<!-- Jar -->
 	<target name="jar" depends="build">
 		<mkdir dir="${dist.lib.dir}" />
+		<delete file="${dist.lib.dir}/${module}.jar"/>
 		<jar jarfile="${dist.lib.dir}/${module}.jar" update="true">
 			<fileset dir="${build.dir}"> 
 			</fileset> 
 		</jar>		
 	</target>
+
+<!-- Builds all the modules needed to build the current module -->
+	<target name= "updateDepends" >
+	 <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	  <classpath>
+	   <pathelement location="${ant.dir}/ant-contrib-0.6.jar"/>
+	  </classpath>
+	 </taskdef>
+
+        <!-- Load the svn task for ant -->
+        <path id="svnant.classpath" >
+         <fileset dir="${ant.dir}">
+          <include name="*.jar" />
+         </fileset>
+        </path>
+        <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref ="svnant.classpath" /> 
+
+	<!-- For each module that we need --> 
+	<for list="${needsModules}" param="letter">
+	 <sequential>
+
+          <!-- Is the needed .jar file already present --> 
+          <available file="${dist.lib.dir}/@{letter}.jar"  property="@{letter}.jar.present"  />
+	  <if>
+	   <equals arg1="${@{letter}.jar.present}" arg2="true" />
+	   <then>
+	    <echo message="@{letter}.jar is present" />
+	   </then>
+
+	   <!-- otherwise check if folder is also not present -->
+	   <else>
+            <property name="@{letter}.folder.present" value="false"/>
+	    <echo message="@{letter}.jar is NOT present. Checking the folder ${dist.dir}/@{letter}" />
+	    <available file="${dist.dir}/@{letter}" type="dir" property="@{letter}.folder.present"/>
+	     <if>
+	      <equals arg1="${@{letter}.folder.present}" arg2="false" />
+	      <then>
+	        <echo message="The folder ${dist.dir}/@{letter} is NOT present. Getting from svn" />
+	        <!-- the folder does not exist, get it via SVN checkout  -->
+		<svn>
+	 	 <checkout url="https://guitar.svn.sourceforge.net/svnroot/guitar/@{letter}/trunk" destPath="${dist.dir}/@{letter}" />
+		</svn>	
+       	      </then>
+	      <else>
+	       <echo message="************** @{letter} folder is present"/>
+	      </else>
+	     </if> 
+
+	      <!-- We have the folder. Compile the folder and get the jar -->
+	      <ant antfile="build.xml" target="all" dir="${dist.dir}/@{letter}/install" inheritAll="false">
+	      </ant>	
+	   </else>
+	  </if>
+	 </sequential>
+	</for>
+</target> 
 
 	<!-- Distribute -->
 	<target name="dist" depends="jar" description="Create a jar for the GUITAR-Core project">		
@@ -162,7 +219,7 @@
 		<delete dir="${build.dir}" />
 		</target>
 
-	<target name= "all" depends="clean,pre,dist,post,copy,doc">
+	<target name= "all" depends="clean,pre,updateDepends,dist,post,copy,doc">
   <echo message="This is ${module}" />
   </target>
 </project>
