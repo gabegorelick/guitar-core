@@ -161,7 +161,7 @@
 	     </if> 
 
 	      <!-- We have the folder. Compile the folder and get the jar -->
-	      <ant antfile="build.xml" target="jar" dir="${dist.dir}/@{letter}/install" inheritAll="false">
+	      <ant antfile="build.xml" target="all" dir="${dist.dir}/@{letter}/install" inheritAll="false">
 	      </ant>	
 	   </else>
 	  </if>
