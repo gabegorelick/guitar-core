@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.xml.bind.JAXBContext;
@@ -30,23 +31,27 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import edu.umd.cs.guitar.util.GUITARLog;
+
 /**
  * 
  * Provide GUITAR data reader and writer.
  * 
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
  */
+// @Deprecated
 public class IO {
 
     /**
      * Read an object from a XML file
+     * 
      * @param is
-     *      input stream 
+     *            input stream
      * @param cls
-     *      class of object to be read 
+     *            class of object to be read
      * @return object
      */
-    public static Object readObjFromFile(FileInputStream is, Class<?> cls) {
+    public static Object readObjFromFile(InputStream is, Class<?> cls) {
 
         Object retObj = null;
         try {
@@ -122,7 +127,8 @@ public class IO {
         try {
             writeObjToFile(object, new FileOutputStream(sFileName));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            GUITARLog.log.error(sFileName + " NOT FOUND!!!");
+            // e.printStackTrace();
         }
     }
 }

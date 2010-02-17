@@ -39,14 +39,68 @@ public abstract class GWindow implements GObject {
 
     boolean isRoot = false;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public abstract boolean equals(Object window);
+
     /**
+     * Extract window GUI information and convert to GUITAR data format
+     * 
+     * <p>
+     * 
+     * @return
+     */
+
+    public abstract GUIType extractGUIProperties();
+
+    /**
+     * Check if a window is actually valid and worth considering.
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public abstract boolean isValid();
+
+    /**
+     * Get the component corresponding to the window
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public abstract GComponent getContainer();
+
+    // /**
+    // * Get all GUI properties of the window (in addition to GUITAR properties)
+    // *
+    // * <p>
+    // *
+    // * @return
+    // */
+    // abstract public List<PropertyType> getGUIProperties();
+
+    /**
+     * Check if the window is modal or not
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public abstract boolean isModal();
+
+
+  /**
      * Extract window GUI information and convert to GUITAR data format
      * 
      * <p>
      * 
      * @return GUIType
      */
-
     public GUIType extractWindow() {
         GUIType retGUI;
 
@@ -61,8 +115,8 @@ public abstract class GWindow implements GObject {
         ComponentTypeWrapper windowAdapter = new ComponentTypeWrapper(window);
 
         // Add properties required by GUITAR
-        windowAdapter.addValueByName(GUITARConstants.ID_TAG_NAME, ""
-                + getFullID());
+        windowAdapter.addValueByName(GUITARConstants.TITLE_TAG_NAME, ""
+                + getTitle());
 
         // Modal
         windowAdapter.addValueByName(GUITARConstants.MODAL_TAG_NAME, ""
@@ -97,30 +151,19 @@ public abstract class GWindow implements GObject {
         return retGUI;
     }
 
-    /**
-     * Get the component corresponding to the window
-     * 
-     * <p>
-     * @return GComponent
-     */
-    abstract public GComponent getContainer();
-
-    abstract public List<PropertyType> getGUIProperties();
-
-    abstract public GUIType extractGUIProperties();
-
     // --------------------
     // Get window properties used for GUITAR
     // --------------------
 
-    /**
-     * Check if the window is modal or not
+    /*
+     * (non-Javadoc)
      * 
-     * <p>
-     * 
-     * @return true/false
+     * @see edu.umd.cs.guitar.model.GXObject#getFirstChildByID(java.lang.String)
      */
-    abstract public boolean isModal();
+    public GComponent getFirstChildByID(String sID) {
+        GComponent container = getContainer();
+        return container.getFirstChildByID(sID);
+    }
 
     /**
      * Check if the window is a root window or not
@@ -144,32 +187,5 @@ public abstract class GWindow implements GObject {
     public void setRoot(boolean isRoot) {
         this.isRoot = isRoot;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see edu.umd.cs.guitar.model.GXObject#getFirstChildByID(java.lang.String)
-     */
-    public GComponent getFirstChildByID(String sID) {
-        GComponent container = getContainer();
-        return container.getFirstChildByID(sID);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public abstract boolean equals(Object window);
-
-    /**
-     * Check if a window is actually valid and worth considering.
-     * 
-     * <p>
-     * 
-     * @return true/false
-     */
-    public abstract boolean isValid();
 
 }

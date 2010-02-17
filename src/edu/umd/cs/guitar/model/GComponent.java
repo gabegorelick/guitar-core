@@ -39,7 +39,21 @@ import edu.umd.cs.guitar.model.wrapper.PropertyTypeWrapper;
  */
 public abstract class GComponent implements GObject {
 
-    private static int ID = 0;
+    /**
+     * 
+     */
+    private static final String COMPONENT_ID_PREFIX = "w";
+    private static int ID_COUNTER = 0;
+
+    private int ID;
+
+    /**
+     * 
+     */
+    public GComponent() {
+        super();
+        this.ID = ID_COUNTER++;
+    }
 
     /**
      * 
@@ -64,8 +78,8 @@ public abstract class GComponent implements GObject {
         ComponentTypeWrapper retCompAdapter = new ComponentTypeWrapper(retComp);
 
         // Add ID
-        retCompAdapter
-                .addValueByName(GUITARConstants.ID_TAG_NAME, "w" + (ID++));
+        String ID = getID();
+        retCompAdapter.addValueByName(GUITARConstants.ID_TAG_NAME, ID);
 
         // String sID = getFullID();
         // retCompAdapter.addValueByName(GUITARConstants.FULL_ID_TAG_NAME, sID);
@@ -102,27 +116,113 @@ public abstract class GComponent implements GObject {
     }
 
     /**
-     * Get all children of the component.
+     * Generate ID for the component.
      * 
      * <p>
      * 
+     * GUITAR uses Java default hashing algorithm on property names and values
+     * to generate ID for the component.
+     * 
      * @return
      */
-    abstract public List<GComponent> getChildren();
+    public String getID() {
+        // return (COMPONENT_ID_PREFIX + (hashCode()));
+        // return (COMPONENT_ID_PREFIX + (ID_COUNTER++));
+        return (COMPONENT_ID_PREFIX + this.ID);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        List<PropertyType> guiProperties = getGUIProperties();
+
+        final int prime = 31;
+        int result = 1;
+        if (guiProperties == null)
+            return 0;
+
+        for (PropertyType property : guiProperties) {
+            String name = property.getName();
+            result = prime * result + (name == null ? 0 : name.hashCode());
+            result = Math.abs(result);
+
+            List<String> valueList = property.getValue();
+            result = prime * result
+                    + (valueList == null ? 0 : valueList.hashCode());
+            result = Math.abs(result);
+
+        }
+
+        return result;
+    }
 
     /**
      * Get the class of the component
      * 
      * @return
      */
-    abstract public String getClassVal();
+    public abstract String getClassVal();
 
     /**
      * Get the list of events can be performed by the component
      * 
      * @return
      */
-    abstract public List<GEvent> getEventList();
+    public abstract List<GEvent> getEventList();
+
+    /**
+     * Get all children of the component.
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public abstract List<GComponent> getChildren();
+
+    /**
+     * Get the direct parent of the component.
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public abstract GComponent getParent();
+
+    /**
+     * 
+     * Get the GUITAR type of event supported by the component (i.e. TERMINAL,
+     * SYSTEM INTERACTION, etc)
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public abstract String getTypeVal();
+
+    /**
+     * Check if the component has children
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public abstract boolean hasChildren();
+
+    /**
+     * @return
+     */
+    public abstract boolean isTerminal();
+
+    /**
+     * Check if the component is enable
+     * 
+     * @return
+     */
+    public abstract boolean isEnable();
 
     /*
      * (non-Javadoc)
@@ -132,7 +232,7 @@ public abstract class GComponent implements GObject {
     @Override
     public GComponent getFirstChildByID(String sID) {
         {
-            if (sID.equals(this.getFullID()))
+            if (sID.equals(this.getID()))
                 return this;
 
             List<GComponent> gChildren = getChildren();
@@ -205,48 +305,4 @@ public abstract class GComponent implements GObject {
             return null;
         }
     }
-
-    /**
-     * Get all GUI properties of widgets
-     * 
-     * <p>
-     * 
-     * @return
-     */
-    abstract public List<PropertyType> getGUIProperties();
-
-    /**
-     * Get the direct parent of the component.
-     * 
-     * <p>
-     * 
-     * @return
-     */
-    abstract public GComponent getParent();
-
-    /**
-     * 
-     * Get the GUITAR type of event supported by the component (i.e. TERMINAL,
-     * SYSTEM INTERACTION, etc)
-     * 
-     * <p>
-     * 
-     * @return
-     */
-    abstract public String getTypeVal();
-
-    /**
-     * Check if the component has children
-     * 
-     * <p>
-     * 
-     * @return
-     */
-    abstract public boolean hasChildren();
-
-    /**
-     * @return
-     */
-    abstract public boolean isTerminal();
-
 }

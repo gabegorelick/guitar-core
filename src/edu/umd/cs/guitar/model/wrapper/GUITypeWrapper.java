@@ -31,6 +31,7 @@ import edu.umd.cs.guitar.model.data.GUIStructure;
 import edu.umd.cs.guitar.model.data.GUIType;
 import edu.umd.cs.guitar.model.data.ObjectFactory;
 import edu.umd.cs.guitar.model.data.PropertyType;
+import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * Adapter class to process GUIType.
@@ -41,7 +42,9 @@ import edu.umd.cs.guitar.model.data.PropertyType;
  * 
  */
 public class GUITypeWrapper {
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
@@ -78,11 +81,11 @@ public class GUITypeWrapper {
     public void parseData(GUIStructure dGUIStructure,
             GUIStructureWrapper wGUIStructure) {
 
-        container = new ComponentTypeWrapper(this.dGUIType.getContainer());
+        GUITARLog.log.debug("Parsing window: " + this.getTitle());
 
-        container.setWindow(this);
-
-        container.parseData(dGUIStructure, wGUIStructure);
+        this.container = new ComponentTypeWrapper(this.dGUIType.getContainer());
+        this.container.setWindow(this);
+        this.container.parseData(dGUIStructure, wGUIStructure);
 
     }
 
@@ -105,7 +108,7 @@ public class GUITypeWrapper {
      * @return the container
      */
     public ComponentTypeWrapper getContainer() {
-        return container;
+        return this.container;
     }
 
     /**
@@ -173,9 +176,8 @@ public class GUITypeWrapper {
         ComponentType window = dGUIType.getWindow();
         ComponentTypeWrapper winAdapter = new ComponentTypeWrapper(window);
         String sGUITitle = winAdapter
-                .getFirstValueByName(GUITARConstants.ID_TAG_NAME);
+                .getFirstValueByName(GUITARConstants.TITLE_TAG_NAME);
         return sGUITitle;
-
     }
 
     public void setTitle(String sTitle) {
@@ -185,7 +187,7 @@ public class GUITypeWrapper {
         AttributesType attributes = window.getAttributes();
 
         PropertyType newProperty = factory.createPropertyType();
-        newProperty.setName(GUITARConstants.ID_TAG_NAME);
+        newProperty.setName(GUITARConstants.TITLE_TAG_NAME);
         List<String> value = new ArrayList<String>();
         value.add(sTitle);
 
@@ -194,7 +196,7 @@ public class GUITypeWrapper {
         for (int i = 0; i < lProperty.size(); i++) {
             p = lProperty.get(i);
 
-            if (p.getName().equals(GUITARConstants.ID_TAG_NAME)) {
+            if (p.getName().equals(GUITARConstants.TITLE_TAG_NAME)) {
                 lProperty.add(i, newProperty);
                 lProperty.remove(p);
             }
@@ -249,9 +251,9 @@ public class GUITypeWrapper {
         }
 
         retWins.add(availWindow);
-//        System.out.println("=====================");
-//        System.out.println(this);
-//        System.out.println("Avail window list" + retWins);
+        // System.out.println("=====================");
+        // System.out.println(this);
+        // System.out.println("Avail window list" + retWins);
         return retWins;
 
     }

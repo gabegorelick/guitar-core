@@ -51,7 +51,7 @@ public class Util {
     }
 
     /**
-     * Get a list of string from a text file Used for ignoring widgets,
+     * Get a list of string from a text file. Used for ignoring widgets,
      * windows...
      * 
      * @param sFileName

@@ -96,7 +96,7 @@ public abstract class GApplication {
     }
 
     /**
-     * Get all widget info a window
+     * Get all widgets info in  a window
      * 
      * <p>
      * 
@@ -140,7 +140,7 @@ public abstract class GApplication {
         Set<GWindow> allWins = getAllWindow();
         Set<String> allWinIDs = new HashSet<String>();
         for (GWindow win : allWins)
-            allWinIDs.add(win.getFullID());
+            allWinIDs.add(win.getTitle());
 
         return allWinIDs;
 
