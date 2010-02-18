@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.model.GApplication;
 import edu.umd.cs.guitar.model.GUITARConstants;
 import edu.umd.cs.guitar.model.GWindow;
@@ -49,17 +50,42 @@ import edu.umd.cs.guitar.util.GUITARLog;
  */
 public class StateMonitorFull extends GTestMonitor {
 
-    // Log log;
-    // ExecutionInfo dExeInfo = new ExecutionInfo();
-    String sStateFile;
-    TestCase outTestCase;
     static ObjectFactory factory = new ObjectFactory();
+
+    /**
+     * Output GUIState file
+     */
+    String sStateFile;
+
+    /**
+     * Output GUI state object
+     */
+    TestCase outTestCase;
+
+    /**
+     * @param sStateFile
+     *      ouput file name 
+     * @param delay
+     *      delay after each step
+     */
+    public StateMonitorFull(String sStateFile, int delay) {
+        super();
+        this.sStateFile = sStateFile;
+        this.delay = delay;
+    }
+
+    /**
+     * Delay time for GUI to get stable before recording
+     */
+    int delay;
+
     GApplication gApplication;
     GReplayerMonitor monitor;
 
     /**
      * @param sStateFile
      */
+    @Deprecated
     public StateMonitorFull(String sStateFile) {
         super();
         this.sStateFile = sStateFile;
@@ -90,6 +116,15 @@ public class StateMonitorFull extends GTestMonitor {
     @Override
     public void afterStep(TestStepEndEventArgs eStep) {
 
+        GUITARLog.log.info("Delaying for " + delay
+                + " ms to get a stable GUI state....");
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         GUITARLog.log.info("Recording GUI state....");
 
         List<StepType> lSteps = outTestCase.getStep();
@@ -110,9 +145,11 @@ public class StateMonitorFull extends GTestMonitor {
             List<PropertyType> ID = monitor.selectIDProperties(eStep.component);
             AttributesType signature = factory.createAttributesType();
             signature.setProperty(ID);
-            
-            GUIStructureWrapper guiStateAdapter = new GUIStructureWrapper(guiState);
-            guiStateAdapter.addValueBySignature(signature, GUITARConstants.INVOKELIST_TAG_NAME, windowsNew);
+
+            GUIStructureWrapper guiStateAdapter = new GUIStructureWrapper(
+                    guiState);
+            guiStateAdapter.addValueBySignature(signature,
+                    GUITARConstants.INVOKELIST_TAG_NAME, windowsNew);
         }
 
         step.setGUIStructure(guiState);
@@ -150,6 +187,15 @@ public class StateMonitorFull extends GTestMonitor {
         // GUITARLog.log.info("Dumping GUI states");
         // IO.writeObjToFile(outTestCase, sStateFile);
         // GUITARLog.log.info("DONE");
+    }
+
+    /* (non-Javadoc)
+     * @see edu.umd.cs.guitar.replayer.monitor.GTestMonitor#exceptionHandler(edu.umd.cs.guitar.exception.GException)
+     */
+    @Override
+    public void exceptionHandler(GException e) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

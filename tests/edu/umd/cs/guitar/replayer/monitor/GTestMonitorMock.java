@@ -3,6 +3,7 @@
  */
 package edu.umd.cs.guitar.replayer.monitor;
 
+import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.replayer.monitor.GTestMonitor;
 import edu.umd.cs.guitar.replayer.monitor.TestStepEndEventArgs;
 import edu.umd.cs.guitar.replayer.monitor.TestStepStartEventArgs;
@@ -50,6 +51,11 @@ public class GTestMonitorMock extends GTestMonitor {
 	@Override
 	public void term() {
 		init=false;
+	}
+	@Override
+	public void exceptionHandler(GException e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

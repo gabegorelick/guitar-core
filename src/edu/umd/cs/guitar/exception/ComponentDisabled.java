@@ -17,64 +17,18 @@
  *	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
  *	THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
-package edu.umd.cs.guitar.replayer;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.umd.cs.guitar.model.GUITARConstants;
-
-
+package edu.umd.cs.guitar.exception;
 /**
- * A structure representing a event  with 
- * event name and its parameters. Will be changed in near future  
- * 
- * <p>
- * 
- * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
+ * @author Bao Nguyen
  *
  */
-@Deprecated
-public class EventData {
-	String name;
-	List<String> parameters;
+public class ComponentDisabled extends GException {
 
-	public EventData(String sFullEvent){
-		String[] sEvents = sFullEvent.split(GUITARConstants.NAME_SEPARATOR);
-		name = sEvents[0];
-		parameters = new ArrayList<String>();
-		
-		for(int i=1;i<sEvents.length;i++){
-			parameters.add(sEvents[i]);
-		}
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the parameters
-	 */
-	public List<String> getParameters() {
-		return parameters;
-	}
-
-	/**
-	 * @param parameters the parameters to set
-	 */
-	public void setParameters(List<String> parameters) {
-		this.parameters = parameters;
-	}
+    /**
+     * 
+     */
+    public ComponentDisabled() {
+        // TODO Auto-generated constructor stub
+    }
 
 }

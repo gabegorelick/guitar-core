@@ -21,6 +21,7 @@ package edu.umd.cs.guitar.replayer.monitor;
 
 import java.util.List;
 
+import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.model.GApplication;
 import edu.umd.cs.guitar.model.IO;
 import edu.umd.cs.guitar.model.data.GUIStructure;
@@ -36,17 +37,49 @@ import edu.umd.cs.guitar.util.GUITARLog;
 /**
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
  */
+@Deprecated
 public class StateMonitor extends GTestMonitor {
 
+    static ObjectFactory factory = new ObjectFactory();
+    
     // Log log;
     // ExecutionInfo dExeInfo = new ExecutionInfo();
+    /**
+     * GUI state file name 
+     */
     String sStateFile;
+    
+    /**
+     * Delay time for GUI to get stable before recording 
+     */
+    int delay;
+    
+    
+    
+    /**
+     * temporary instance variable 
+     */
     TestCase outTestCase;
-    static ObjectFactory factory = new ObjectFactory();
+    
+    
+    
+    
+    
+
+    /**
+     * @param sStateFile
+     * @param delay
+     */
+    public StateMonitor(String sStateFile, int delay) {
+        super();
+        this.sStateFile = sStateFile;
+        this.delay = delay;
+    }
 
     /**
      * @param sStateFile
      */
+    @Deprecated
     public StateMonitor(String sStateFile) {
         super();
         this.sStateFile = sStateFile;
@@ -73,7 +106,10 @@ public class StateMonitor extends GTestMonitor {
     @Override
     public void afterStep(TestStepEndEventArgs eStep) {
 
+        GUITARLog.log.info("Delaying for ");
         GUITARLog.log.info("Recording GUI state....");
+        
+        
 
         List<StepType> lSteps = outTestCase.getStep();
 
@@ -114,6 +150,15 @@ public class StateMonitor extends GTestMonitor {
 //        GUITARLog.log.info("Dumping GUI states");
 //        IO.writeObjToFile(outTestCase, sStateFile);
 //        GUITARLog.log.info("DONE");
+    }
+
+    /* (non-Javadoc)
+     * @see edu.umd.cs.guitar.replayer.monitor.GTestMonitor#exceptionHandler(edu.umd.cs.guitar.exception.GException)
+     */
+    @Override
+    public void exceptionHandler(GException e) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

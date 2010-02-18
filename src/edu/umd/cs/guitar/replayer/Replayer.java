@@ -39,15 +39,16 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import edu.umd.cs.guitar.event.GEvent;
+import edu.umd.cs.guitar.exception.ComponentDisabled;
 import edu.umd.cs.guitar.exception.ComponentNotFound;
-import edu.umd.cs.guitar.exception.TimeoutException;
+import edu.umd.cs.guitar.exception.EventPerformException;
+import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.model.GComponent;
 import edu.umd.cs.guitar.model.GUITARConstants;
 import edu.umd.cs.guitar.model.GWindow;
 import edu.umd.cs.guitar.model.IO;
 import edu.umd.cs.guitar.model.data.EFG;
 import edu.umd.cs.guitar.model.data.EventType;
-import edu.umd.cs.guitar.model.data.EventsType;
 import edu.umd.cs.guitar.model.data.GUIStructure;
 import edu.umd.cs.guitar.model.data.PropertyType;
 import edu.umd.cs.guitar.model.data.StepType;
@@ -57,9 +58,7 @@ import edu.umd.cs.guitar.model.wrapper.GUIStructureWrapper;
 import edu.umd.cs.guitar.model.wrapper.PropertyTypeWrapper;
 import edu.umd.cs.guitar.replayer.monitor.GTestMonitor;
 import edu.umd.cs.guitar.replayer.monitor.TestStepEndEventArgs;
-import edu.umd.cs.guitar.replayer.monitor.TestStepEventArgs;
 import edu.umd.cs.guitar.replayer.monitor.TestStepStartEventArgs;
-import edu.umd.cs.guitar.util.Debugger;
 import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
@@ -174,7 +173,8 @@ public class Replayer {
      * 
      */
     public void execute() throws ComponentNotFound {
-
+        // 
+        try {
         monitor.setUp();
         log.info("Connecting to application...");
         monitor.connectToApplication();
@@ -201,6 +201,12 @@ public class Replayer {
         }
         monitor.cleanUp();
 
+        } catch (GException e) {
+            GUITARLog.log.error("GUITAR Exception", e);
+            for (GTestMonitor monitor : lTestMonitor) {
+                monitor.exceptionHandler(e);
+            }
+        }
     }
 
     /**
@@ -251,7 +257,7 @@ public class Replayer {
         TestStepStartEventArgs stepStartArgs = new TestStepStartEventArgs(step);
 
         // -----------------------
-        // Monitor before action
+        // Monitor before step
         for (GTestMonitor aTestMonitor : lTestMonitor) {
             aTestMonitor.beforeStep(stepStartArgs);
         }
@@ -286,7 +292,7 @@ public class Replayer {
         String sWindowID = getWindowName(sWidgetID);
 
         if (sWindowID == null) {
-            GUITARLog.log.error("Window ID not found");
+            GUITARLog.log.error("Window Title not found");
             throw new ComponentNotFound();
         }
 
@@ -312,10 +318,10 @@ public class Replayer {
 
         GUITARLog.log.info("Finding widget *" + sWidgetID + "*.... ");
 
-        GUITARLog.log.debug("Componnent signature: ");
-        for (PropertyTypeWrapper p : IDAdapter) {
-            GUITARLog.log.debug(p.toString());
-        }
+		// GUITARLog.log.debug("Componnent signature: ");
+		// for (PropertyTypeWrapper p : IDAdapter) {
+		// GUITARLog.log.debug(p.toString());
+		// }
 
         GComponent gComponent = containter.getFirstChild(IDAdapter);
 
@@ -323,8 +329,10 @@ public class Replayer {
             throw new ComponentNotFound();
 
         GUITARLog.log.info("FOUND");
-        GUITARLog.log.info("Widget Title: *" + gComponent.getName() + "*");
+        GUITARLog.log.info("Widget Title: *" + gComponent.getID() + "*");
         GUITARLog.log.info("");
+        if (!gComponent.isEnable())
+            throw new ComponentDisabled();
 
         // Actions
         GEvent gEvent = monitor.getAction(sAction);
@@ -347,10 +355,6 @@ public class Replayer {
         }
     }
 
-    // private void executeWidget(String sWindowName,List<PropertyType> ID ){
-    //        
-    // }
-
     /**
      * Get container window
      * 
@@ -372,7 +376,7 @@ public class Replayer {
                     + "\" and Value=\""
                     + sWidgetID
                     + "\"]]/Window/Attributes/Property[Name=\""
-                    + GUITARConstants.ID_TAG_NAME + "\"]/Value/text()";
+                    + GUITARConstants.TITLE_TAG_NAME + "\"]/Value/text()";
             expr = xpath.compile(xpathExpression);
             result = expr.evaluate(docGUI, XPathConstants.NODESET);
             nodes = (NodeList) result;

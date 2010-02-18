@@ -19,6 +19,7 @@
  */
 package edu.umd.cs.guitar.replayer.monitor;
 
+import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.replayer.Replayer;
 
 //import edu.umd.cs.guitar.guitestrunner.TestCaseStepEventArgs;
@@ -58,6 +59,12 @@ public abstract class GTestMonitor {
      * Called after the last step is through executing.
      */
     public abstract void term();
+    
+    
+    /**
+     * Handle GUITAR exception thrown through executing. 
+     */
+    public abstract void exceptionHandler(GException e);
 
     /**
      * Notification right before a step runs.

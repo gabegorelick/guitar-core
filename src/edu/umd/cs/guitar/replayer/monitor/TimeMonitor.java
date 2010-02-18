@@ -19,6 +19,8 @@
  */
 package edu.umd.cs.guitar.replayer.monitor;
 
+import edu.umd.cs.guitar.exception.GException;
+import edu.umd.cs.guitar.exception.TimeoutException;
 import edu.umd.cs.guitar.util.Debugger;
 import edu.umd.cs.guitar.util.GUITARLog;
 
@@ -43,7 +45,7 @@ public class TimeMonitor extends GTestMonitor {
         super();
         this.nStepTimeout = nStepTimeout;
         this.nTestcaseTimeout = nTestcaseTimeout;
-        
+
     }
 
     /*
@@ -101,6 +103,15 @@ public class TimeMonitor extends GTestMonitor {
         // GUITARLog.log.info("Time Elapsed: " + df.format(nDuration));
     }
 
+    /* (non-Javadoc)
+     * @see edu.umd.cs.guitar.replayer.monitor.GTestMonitor#exceptionHandler(edu.umd.cs.guitar.exception.GException)
+     */
+    @Override
+    public void exceptionHandler(GException e) {
+        if(e instanceof TimeoutException)
+            GUITARLog.log.error("TimeOut");
+    }
+
 }
 
 /**
@@ -154,6 +165,7 @@ class Timer extends Thread {
 
     private void timeout() {
         GUITARLog.log.info(name + ": TIMEOUT!!!");
+        System.setSecurityManager(null);
         System.exit(1);
     }
 
