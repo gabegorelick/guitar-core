@@ -18,20 +18,21 @@
  *	THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 package edu.umd.cs.guitar.exception;
+
 import java.lang.Exception;
 
 /**
  * 
- * All exception in GUITAR extend this class  
+ * All runtime exception in GUITAR extend this class
  * 
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
- *
+ * 
  */
-public abstract class  GException extends Exception {
+public abstract class GException extends RuntimeException {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 523966195230780507L;
+    private static final long serialVersionUID = 523966195230780507L;
 
 }

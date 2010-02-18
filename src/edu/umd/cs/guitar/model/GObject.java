@@ -19,42 +19,54 @@
  */
 package edu.umd.cs.guitar.model;
 
+import java.util.List;
+
 import edu.umd.cs.guitar.model.data.ObjectFactory;
+import edu.umd.cs.guitar.model.data.PropertyType;
 
 /**
  * Abstract class for accessible objects in GUITAR
  * 
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
- *
+ * 
  */
 public interface GObject {
-	
-	static ObjectFactory factory = new ObjectFactory();
 
-	/**
-	 * Get Full ID of the component from a combination of its GUI properties
-	 * 
-	 * @return String
-	 */
-	public abstract String getFullID();
+    static ObjectFactory factory = new ObjectFactory();
 
-	/**
-	 * Get ID of the component (in Title tag of GUI file)
-	 * 
-	 * @return String
-	 */
-	public abstract String getName();
+    /**
+     * Get Title of the component from a combination of its GUI properties
+     * 
+     * @return
+     */
+    public String getTitle();
 
-	/**
-	 * 
-	 * Get children by its id, the searching scope includes the component
-	 * itself.
-	 * 
-	 * <p>
-	 * 
-	 * @param sID
-	 * @return GComponent
-	 */
-	public abstract GComponent getFirstChildByID(String sID);
+//    /**
+//     * Get ID of the component (in Title tag of GUI file)
+//     * 
+//     * @return
+//     */
+//    public String getName();
 
+    /**
+     * 
+     * Get children by its id, the searching scope includes the component
+     * itself.
+     * 
+     * <p>
+     * 
+     * @param sID
+     * @return
+     */
+    public GComponent getFirstChildByID(String sID);
+
+    /**
+     * Get all GUI properties of the GUI object (in addition to GUITAR
+     * properties)
+     * 
+     * <p>
+     * 
+     * @return
+     */
+    public List<PropertyType> getGUIProperties();
 }

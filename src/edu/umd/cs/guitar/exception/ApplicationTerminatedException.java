@@ -20,19 +20,25 @@
 package edu.umd.cs.guitar.exception;
 
 /**
+ * Thrown if the AUT terminated
  * 
- * Exception related to Event performance during execution.
+ * @author Bao Nguyen
  * 
- * <p>
- * 
- * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
- *
  */
-public class EventPerformException extends GException {
+public class ApplicationTerminatedException extends GException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1559899867113230623L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 200014640734998005L;
 
+    int rc;
+
+    /**
+     * @param rc
+     */
+    public ApplicationTerminatedException(int rc) {
+        super();
+        this.rc = rc;
+    }
 }

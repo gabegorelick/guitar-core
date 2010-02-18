@@ -40,7 +40,6 @@ import edu.umd.cs.guitar.model.data.GUIType;
  */
 public class GUIStructureWrapper {
     GUIStructure dGUIStructure;
-
     List<GUITypeWrapper> lGUI;
 
     /**
@@ -50,6 +49,7 @@ public class GUIStructureWrapper {
         lGUI = new ArrayList<GUITypeWrapper>();
 
         Set<GUITypeWrapper> listRootWindows = getRootWindows();
+
         for (GUITypeWrapper rootWin : listRootWindows) {
             lGUI.add(rootWin);
             rootWin.parseData(dGUIStructure, this);
@@ -119,14 +119,23 @@ public class GUIStructureWrapper {
      * @return
      */
     public GUITypeWrapper getRoot() {
-        List<GUIType> lGUI = dGUIStructure.getGUI();
+        // List<GUIType> lGUI = dGUIStructure.getGUI();
+        //
+        // for (GUIType gui : lGUI) {
+        // GUITypeWrapper guiA = new GUITypeWrapper(gui);
+        // if (guiA.isRoot())
+        // return guiA;
+        // }
+        // return null;
 
-        for (GUIType gui : lGUI) {
-            GUITypeWrapper guiA = new GUITypeWrapper(gui);
-            if (guiA.isRoot())
-                return guiA;
-        }
-        return null;
+        Set<GUITypeWrapper> guiList = getRootWindows();
+        if (guiList == null)
+            return null;
+
+        if (guiList.size() == 0)
+            ;
+
+        return (GUITypeWrapper) (guiList.toArray())[0];
     }
 
     /**
@@ -157,7 +166,7 @@ public class GUIStructureWrapper {
      */
     public void addValueBySignature(AttributesType signature, String name,
             Set<String> values) {
-        //TODO: implement this method
+        // TODO: implement this method
     }
 
     /**

@@ -35,12 +35,14 @@ import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * 
- * Provide GUITAR data reader and writer.
+ * Provide GUITAR data XML reader and writer. This is a replacement of
+ * {@link IO} to deal with dynamic resource allocation.
+ * 
+ * <p>
  * 
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
  */
-// @Deprecated
-public class IO {
+public class XMLHandler {
 
     /**
      * Read an object from a XML file
@@ -49,9 +51,9 @@ public class IO {
      *            input stream
      * @param cls
      *            class of object to be read
-     * @return object
+     * @return
      */
-    public static Object readObjFromFile(InputStream is, Class<?> cls) {
+    public Object readObjFromFile(InputStream is, Class<?> cls) {
 
         Object retObj = null;
         try {
@@ -77,13 +79,14 @@ public class IO {
      *            class of object
      * @return the object to be read
      */
-    public static Object readObjFromFile(String sFileName, Class<?> cls) {
+    public Object readObjFromFile(String sFileName, Class<?> cls) {
         Object retObj = null;
         try {
-            retObj = readObjFromFile(new FileInputStream(sFileName), cls);
-        } catch (FileNotFoundException e) {
-        	GUITARLog.log.error(sFileName + " not found!!!");
-//            e.printStackTrace();
+
+            InputStream in = getClass().getResourceAsStream(sFileName);
+            retObj = readObjFromFile(in, cls);
+        } catch (Exception e) {
+            System.out.println("File " + sFileName + " not found");
         }
         return retObj;
     }
@@ -96,7 +99,7 @@ public class IO {
      * @param os
      *            output stream
      */
-    public static void writeObjToFile(Object object, OutputStream os) {
+    public void writeObjToFile(Object object, OutputStream os) {
         String packageName = object.getClass().getPackage().getName();
         JAXBContext jc;
         try {
@@ -124,12 +127,11 @@ public class IO {
      * @param sFileName
      *            file name
      */
-    public static void writeObjToFile(Object object, String sFileName) {
+    public void writeObjToFile(Object object, String sFileName) {
         try {
             writeObjToFile(object, new FileOutputStream(sFileName));
         } catch (FileNotFoundException e) {
-            GUITARLog.log.error(sFileName + " NOT FOUND!!!");
-            // e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

@@ -91,18 +91,21 @@ public class ComponentTypeWrapper {
 
         // Parse invoked windows
         if (sInvokeList != null) {
+
             this.invokedWindows = new ArrayList<GUITypeWrapper>();
 
             for (String invokedWinTitle : sInvokeList) {
                 GUITypeWrapper invokedWin = wGUIStructure
                         .getGUIByTitle(invokedWinTitle);
+
                 if (invokedWin != null) {
                     invokedWindows.add(invokedWin);
                     invokedWin.setInvoker(this);
                     List<GUITypeWrapper> lGUIs = wGUIStructure.getGUIs();
-                    if (!lGUIs.contains(invokedWin))
+                    if (!lGUIs.contains(invokedWin)) {
                         wGUIStructure.getGUIs().add(invokedWin);
-                    invokedWin.parseData(dGUIStructure, wGUIStructure);
+                        invokedWin.parseData(dGUIStructure, wGUIStructure);
+                    }
                 }
             }
         }
@@ -118,7 +121,6 @@ public class ComponentTypeWrapper {
                 for (ComponentType dChild : dChildrenList) {
                     ComponentTypeWrapper wChild = new ComponentTypeWrapper(
                             dChild);
-
                     wChild.setParent(this);
                     wChild.setWindow(this.window);
                     wChild.parseData(dGUIStructure, wGUIStructure);
