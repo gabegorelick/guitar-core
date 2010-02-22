@@ -72,414 +72,417 @@ import edu.umd.cs.guitar.util.GUITARLog;
  */
 public class Replayer {
 
-    /**
-     * Test case data
-     */
-    private TestCase tc;
-    private String sGUIFfile;
-    private String sEFGFfile;
+	/**
+	 * Test case data
+	 */
+	private TestCase tc;
+	private String sGUIFfile;
+	private String sEFGFfile;
 
-    // Test Monitor
-    private GReplayerMonitor monitor;
-    private List<GTestMonitor> lTestMonitor = new ArrayList<GTestMonitor>();
+	// Test Monitor
+	private GReplayerMonitor monitor;
+	private List<GTestMonitor> lTestMonitor = new ArrayList<GTestMonitor>();
 
-    // Log
-    Logger log = GUITARLog.log;
+	// Log
+	Logger log = GUITARLog.log;
 
-    // Secondary input
-    private GUIStructureWrapper guiStructureAdapter;
-    private EFG efg;
-    private Document docGUI;
+	// Secondary input
+	private GUIStructureWrapper guiStructureAdapter;
+	private EFG efg;
+	private Document docGUI;
 
-    // private Document docEFG;
+	// private Document docEFG;
 
-    /**
-     * @param tc
-     * @param sGUIFile
-     * @param sEFGFile
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public Replayer(TestCase tc, String sGUIFile, String sEFGFile)
-            throws ParserConfigurationException, SAXException, IOException {
-        super();
-        this.tc = tc;
-        this.sGUIFfile = sGUIFile;
-        this.sEFGFfile = sEFGFile;
+	/**
+	 * @param tc
+	 * @param sGUIFile
+	 * @param sEFGFile
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	public Replayer(TestCase tc, String sGUIFile, String sEFGFile)
+			throws ParserConfigurationException, SAXException, IOException {
+		super();
+		this.tc = tc;
+		this.sGUIFfile = sGUIFile;
+		this.sEFGFfile = sEFGFile;
 
-        // Initialize GUI object
-        GUIStructure gui = (GUIStructure) IO.readObjFromFile(sGUIFile,
-                GUIStructure.class);
-        guiStructureAdapter = new GUIStructureWrapper(gui);
+		// Initialize GUI object
+		GUIStructure gui = (GUIStructure) IO.readObjFromFile(sGUIFile,
+				GUIStructure.class);
+		guiStructureAdapter = new GUIStructureWrapper(gui);
 
-        // Initialize EFG object
-        this.efg = (EFG) IO.readObjFromFile(sEFGFile, EFG.class);
+		// Initialize EFG object
+		this.efg = (EFG) IO.readObjFromFile(sEFGFile, EFG.class);
 
-        // Initialize EFG XML file
-        DocumentBuilderFactory domFactory = DocumentBuilderFactory
-                .newInstance();
-        domFactory.setNamespaceAware(true);
-        DocumentBuilder builder;
-        builder = domFactory.newDocumentBuilder();
-        docGUI = builder.parse(sGUIFile);
-        // docEFG = builder.parse(sEFGFile);
-    }
+		// Initialize EFG XML file
+		DocumentBuilderFactory domFactory = DocumentBuilderFactory
+				.newInstance();
+		domFactory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		builder = domFactory.newDocumentBuilder();
+		docGUI = builder.parse(sGUIFile);
+		// docEFG = builder.parse(sEFGFile);
+	}
 
-    /**
-     * Time out for the replayer TODO: Move to a monitor
-     */
-    private int TIME_OUT = 0;
+	/**
+	 * Time out for the replayer TODO: Move to a monitor
+	 */
+	private int TIME_OUT = 0;
 
-    /**
-     * @param nTimeOut
-     *            the nTimeOut to set
-     */
-    public void setTimeOut(int nTimeOut) {
-        this.TIME_OUT = nTimeOut;
-    }
+	/**
+	 * @param nTimeOut
+	 *            the nTimeOut to set
+	 */
+	public void setTimeOut(int nTimeOut) {
+		this.TIME_OUT = nTimeOut;
+	}
 
-    /**
-     * Constructor for the replayer
-     * 
-     * @param tc
-     *            input test case
-     * @param log
-     *            log object
-     */
-    @Deprecated
-    public Replayer(TestCase tc, Logger log) {
-        super();
-        this.tc = tc;
-        this.log = log;
-    }
+	/**
+	 * Constructor for the replayer
+	 * 
+	 * @param tc
+	 *            input test case
+	 * @param log
+	 *            log object
+	 */
+	@Deprecated
+	public Replayer(TestCase tc, Logger log) {
+		super();
+		this.tc = tc;
+		this.log = log;
+	}
 
-    /**
-     * Constructor for the replayer
-     * 
-     * @param tc
-     *            input test case
-     */
-    @Deprecated
-    public Replayer(TestCase tc) {
-        super();
-        this.tc = tc;
-    }
+	/**
+	 * Constructor for the replayer
+	 * 
+	 * @param tc
+	 *            input test case
+	 */
+	@Deprecated
+	public Replayer(TestCase tc) {
+		super();
+		this.tc = tc;
+	}
 
-    /**
-     * Parse and run test case.
-     * 
-     * @throws ComponentNotFound
-     * 
-     */
-    public void execute() throws ComponentNotFound {
-        // 
-        try {
-        monitor.setUp();
-        log.info("Connecting to application...");
-        monitor.connectToApplication();
+	/**
+	 * Parse and run test case.
+	 * 
+	 * @throws ComponentNotFound
+	 * 
+	 */
+	public void execute() throws ComponentNotFound {
+		// 
+		try {
+			monitor.setUp();
 
-        // Monitor before the test case
-        for (GTestMonitor monitor : lTestMonitor) {
-            monitor.init();
-        }
+			log.info("Connecting to application...");
+			monitor.connectToApplication();
 
-        log.info("Executing test case");
-        log.info("" + tc.getStep().size());
+			// Monitor before the test case
+			for (GTestMonitor monitor : lTestMonitor) {
+				monitor.init();
+			}
 
-        List<StepType> lSteps = tc.getStep();
-        int nStep = lSteps.size();
+			log.info("Executing test case");
+			log.info("" + tc.getStep().size());
 
-        for (int i = 0; i < nStep; i++) {
-            log.info("---------------------");
-            StepType step = lSteps.get(i);
-            executeStep(step);
-        }
-        // Monitor after the test case
-        for (GTestMonitor monitor : lTestMonitor) {
-            monitor.term();
-        }
-        monitor.cleanUp();
+			List<StepType> lSteps = tc.getStep();
+			int nStep = lSteps.size();
 
-        } catch (GException e) {
-            GUITARLog.log.error("GUITAR Exception", e);
-            for (GTestMonitor monitor : lTestMonitor) {
-                monitor.exceptionHandler(e);
-            }
-        }
-    }
+			for (int i = 0; i < nStep; i++) {
+				log.info("---------------------");
+				StepType step = lSteps.get(i);
+				executeStep(step);
+			}
+			// Monitor after the test case
+			for (GTestMonitor monitor : lTestMonitor) {
+				monitor.term();
+			}
+			monitor.cleanUp();
 
-    /**
-     * A helper method to move the execution to another thread
-     * 
-     * @throws ComponentNotFound
-     * 
-     */
-    private void executeThread() throws ComponentNotFound {
+		} catch (GException e) {
+			GUITARLog.log.error("GUITAR Exception", e);
+			for (GTestMonitor monitor : lTestMonitor) {
+				monitor.exceptionHandler(e);
+			}
+		}
+	}
 
-        monitor.setUp();
-        log.info("Connecting to application");
-        monitor.connectToApplication();
+	/**
+	 * A helper method to move the execution to another thread
+	 * 
+	 * @throws ComponentNotFound
+	 * 
+	 */
+	@Deprecated
+	private void executeThread() throws ComponentNotFound {
 
-        // Monitor before the test case
-        for (GTestMonitor monitor : lTestMonitor) {
-            monitor.init();
-        }
+		monitor.setUp();
+		log.info("Connecting to application");
+		monitor.connectToApplication();
 
-        log.info("Executing test case");
-        log.info("" + tc.getStep().size());
+		// Monitor before the test case
+		for (GTestMonitor monitor : lTestMonitor) {
+			monitor.init();
+		}
 
-        List<StepType> lSteps = tc.getStep();
-        int nStep = lSteps.size();
+		log.info("Executing test case");
+		log.info("" + tc.getStep().size());
 
-        for (int i = 0; i < nStep; i++) {
-            log.info("---------------------");
-            StepType step = lSteps.get(i);
-            executeStep(step);
-        }
-        // Monitor after the test case
-        for (GTestMonitor monitor : lTestMonitor) {
-            monitor.term();
-        }
-        monitor.cleanUp();
-    }
+		List<StepType> lSteps = tc.getStep();
+		int nStep = lSteps.size();
 
-    /**
-     * Execute a single step in the test case
-     * 
-     * <p>
-     * 
-     * @param step
-     * @throws ComponentNotFound
-     */
-    private void executeStep(StepType step) throws ComponentNotFound {
+		for (int i = 0; i < nStep; i++) {
+			log.info("---------------------");
+			StepType step = lSteps.get(i);
+			executeStep(step);
+		}
+		// Monitor after the test case
+		for (GTestMonitor monitor : lTestMonitor) {
+			monitor.term();
+		}
+		monitor.cleanUp();
+	}
 
-        TestStepStartEventArgs stepStartArgs = new TestStepStartEventArgs(step);
+	/**
+	 * Execute a single step in the test case
+	 * 
+	 * <p>
+	 * 
+	 * @param step
+	 * @throws ComponentNotFound
+	 */
+	private void executeStep(StepType step) throws ComponentNotFound {
 
-        // -----------------------
-        // Monitor before step
-        for (GTestMonitor aTestMonitor : lTestMonitor) {
-            aTestMonitor.beforeStep(stepStartArgs);
-        }
+		TestStepStartEventArgs stepStartArgs = new TestStepStartEventArgs(step);
 
-        // Events
-        String sEventID = step.getEventId();
-        GUITARLog.log.info("EventID: " + sEventID);
+		// -----------------------
+		// Monitor before step
+		for (GTestMonitor aTestMonitor : lTestMonitor) {
+			aTestMonitor.beforeStep(stepStartArgs);
+		}
 
-        // Get widget ID and actions
-        // String sWidgetID = getWidgetID("WidgetId", sEventID);
-        String sWidgetID = null;
-        String sAction = null;
+		// Events
+		String sEventID = step.getEventId();
+		GUITARLog.log.info("EventID: " + sEventID);
 
-        List<EventType> lEvents = efg.getEvents().getEvent();
+		// Get widget ID and actions
+		// String sWidgetID = getWidgetID("WidgetId", sEventID);
+		String sWidgetID = null;
+		String sAction = null;
 
-        for (EventType event : lEvents) {
-            String eventID = event.getEventId();
-            if (sEventID.equals(eventID)) {
-                sWidgetID = event.getWidgetId();
-                sAction = event.getAction();
-            }
-        }
+		List<EventType> lEvents = efg.getEvents().getEvent();
 
-        if (sWidgetID == null) {
-            GUITARLog.log.error("Component ID not found");
-            throw new ComponentNotFound();
-        } else if (sAction == null) {
-            GUITARLog.log.error("Action not found");
-            throw new ComponentNotFound();
-        }
+		for (EventType event : lEvents) {
+			String eventID = event.getEventId();
+			if (sEventID.equals(eventID)) {
+				sWidgetID = event.getWidgetId();
+				sAction = event.getAction();
+			}
+		}
 
-        String sWindowID = getWindowName(sWidgetID);
+		if (sWidgetID == null) {
+			GUITARLog.log.error("Component ID not found");
+			throw new ComponentNotFound();
+		} else if (sAction == null) {
+			GUITARLog.log.error("Action not found");
+			throw new ComponentNotFound();
+		}
 
-        if (sWindowID == null) {
-            GUITARLog.log.error("Window Title not found");
-            throw new ComponentNotFound();
-        }
+		String sWindowID = getWindowName(sWidgetID);
 
-        GUITARLog.log.info("Finding window *" + sWindowID + "*.... ");
-        GWindow gWindow = monitor.getWindow(sWindowID);
-        GUITARLog.log.info("FOUND");
-        GUITARLog.log.info("");
+		if (sWindowID == null) {
+			GUITARLog.log.error("Window Title not found");
+			throw new ComponentNotFound();
+		}
 
-        ComponentTypeWrapper comp = guiStructureAdapter
-                .getComponentFromID(sWidgetID);
+		GUITARLog.log.info("Window Title: *" + sWindowID+"*");
+		GUITARLog.log.info("Widget ID: *" + sWidgetID+"*");
+		GUITARLog.log.info("");
+		
+		GUITARLog.log.info("Finding window *" + sWindowID+"*....");
+		GWindow gWindow = monitor.getWindow(sWindowID);
+		GUITARLog.log.info("FOUND");
+		GUITARLog.log.info("");
 
-        if (comp == null)
-            throw new ComponentNotFound();
+		ComponentTypeWrapper comp = guiStructureAdapter
+				.getComponentFromID(sWidgetID);
 
-        List<PropertyType> ID = monitor.selectIDProperties(comp
-                .getDComponentType());
-        List<PropertyTypeWrapper> IDAdapter = new ArrayList<PropertyTypeWrapper>();
+		if (comp == null)
+			throw new ComponentNotFound();
 
-        for (PropertyType p : ID)
-            IDAdapter.add(new PropertyTypeWrapper(p));
+		List<PropertyType> ID = monitor.selectIDProperties(comp
+				.getDComponentType());
+		List<PropertyTypeWrapper> IDAdapter = new ArrayList<PropertyTypeWrapper>();
 
-        GComponent containter = gWindow.getContainer();
+		for (PropertyType p : ID)
+			IDAdapter.add(new PropertyTypeWrapper(p));
 
-        GUITARLog.log.info("Finding widget *" + sWidgetID + "*.... ");
+		GComponent containter = gWindow.getContainer();
+
+		GUITARLog.log.info("Finding widget *" + sWidgetID+"*....");
 
 		// GUITARLog.log.debug("Componnent signature: ");
 		// for (PropertyTypeWrapper p : IDAdapter) {
 		// GUITARLog.log.debug(p.toString());
 		// }
 
-        GComponent gComponent = containter.getFirstChild(IDAdapter);
+		GComponent gComponent = containter.getFirstChild(IDAdapter);
 
-        if (gComponent == null)
-            throw new ComponentNotFound();
+		if (gComponent == null)
+			throw new ComponentNotFound();
 
-        GUITARLog.log.info("FOUND");
-        GUITARLog.log.info("Widget Title: *" + gComponent.getID() + "*");
-        GUITARLog.log.info("");
-        if (!gComponent.isEnable())
-            throw new ComponentDisabled();
+		GUITARLog.log.info("FOUND");
+		GUITARLog.log.info("Widget Title: *" + gComponent.getTitle() + "*");
+		GUITARLog.log.info("");
+		if (!gComponent.isEnable())
+			throw new ComponentDisabled();
 
-        // Actions
-        GEvent gEvent = monitor.getAction(sAction);
-        List<String> parameters = step.getParameter();
+		// Actions
+		GEvent gEvent = monitor.getAction(sAction);
+		List<String> parameters = step.getParameter();
 
-        GUITARLog.log.info("Action: *" + sAction);
-        GUITARLog.log.info("");
+		GUITARLog.log.info("Action: *" + sAction);
+		GUITARLog.log.info("");
 
-        if (parameters == null)
-            gEvent.perform(gComponent);
-        else
-            gEvent.perform(gComponent, parameters);
+		if (parameters == null)
+			gEvent.perform(gComponent);
+		else
+			gEvent.perform(gComponent, parameters);
 
-        TestStepEndEventArgs stepEndArgs = new TestStepEndEventArgs(step,
-                gComponent.extractProperties(), gWindow.extractGUIProperties());
-        // -----------------------
-        // Monitor after step
-        for (GTestMonitor aTestMonitor : lTestMonitor) {
-            aTestMonitor.afterStep(stepEndArgs);
-        }
-    }
+		TestStepEndEventArgs stepEndArgs = new TestStepEndEventArgs(step,
+				gComponent.extractProperties(), gWindow.extractGUIProperties());
+		// -----------------------
+		// Monitor after step
+		for (GTestMonitor aTestMonitor : lTestMonitor) {
+			aTestMonitor.afterStep(stepEndArgs);
+		}
+	}
 
-    /**
-     * Get container window
-     * 
-     * <p>
-     * 
-     * @return String
-     */
-    private String getWindowName(String sWidgetID) {
+	/**
+	 * Get container window
+	 * 
+	 * <p>
+	 * 
+	 * @return String
+	 */
+	private String getWindowName(String sWidgetID) {
 
-        String sWindowName = null;
-        // get widget ID
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        XPathExpression expr;
-        Object result;
-        NodeList nodes;
-        try {
-            String xpathExpression = "/GUIStructure/GUI[Container//Property[Name=\""
-                    + GUITARConstants.ID_TAG_NAME
-                    + "\" and Value=\""
-                    + sWidgetID
-                    + "\"]]/Window/Attributes/Property[Name=\""
-                    + GUITARConstants.TITLE_TAG_NAME + "\"]/Value/text()";
-            expr = xpath.compile(xpathExpression);
-            result = expr.evaluate(docGUI, XPathConstants.NODESET);
-            nodes = (NodeList) result;
-            if (nodes.getLength() > 0)
-                sWindowName = nodes.item(0).getNodeValue();
-        } catch (XPathExpressionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return sWindowName;
-    }
+		String sWindowName = null;
+		// get widget ID
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		XPathExpression expr;
+		Object result;
+		NodeList nodes;
+		try {
+			String xpathExpression = "/GUIStructure/GUI[Container//Property[Name=\""
+					+ GUITARConstants.ID_TAG_NAME
+					+ "\" and Value=\""
+					+ sWidgetID
+					+ "\"]]/Window/Attributes/Property[Name=\""
+					+ GUITARConstants.TITLE_TAG_NAME + "\"]/Value/text()";
+			expr = xpath.compile(xpathExpression);
+			result = expr.evaluate(docGUI, XPathConstants.NODESET);
+			nodes = (NodeList) result;
+			if (nodes.getLength() > 0)
+				sWindowName = nodes.item(0).getNodeValue();
+		} catch (XPathExpressionException e) {
+			GUITARLog.log.error(e);
+		}
+		return sWindowName;
+	}
 
-    // /**
-    // * Get Widget ID from eventID
-    // *
-    // * @return
-    // */
-    // private String getWidgetID(String sTag, String sEventID) {
-    // String sWidgetID = null;
-    // // get widget ID
-    // XPath xpath = XPathFactory.newInstance().newXPath();
-    // XPathExpression expr;
-    // Object result;
-    // NodeList nodes;
-    // try {
-    //
-    // expr = xpath.compile("/EFG/Events/Event[EventId=\"" + sEventID
-    // + "\"]/" + sTag + "/text()");
-    // result = expr.evaluate(docEFG, XPathConstants.NODESET);
-    // nodes = (NodeList) result;
-    // if (nodes.getLength() > 0)
-    // sWidgetID = nodes.item(0).getNodeValue();
-    // } catch (XPathExpressionException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // return sWidgetID;
-    // }
+	// /**
+	// * Get Widget ID from eventID
+	// *
+	// * @return
+	// */
+	// private String getWidgetID(String sTag, String sEventID) {
+	// String sWidgetID = null;
+	// // get widget ID
+	// XPath xpath = XPathFactory.newInstance().newXPath();
+	// XPathExpression expr;
+	// Object result;
+	// NodeList nodes;
+	// try {
+	//
+	// expr = xpath.compile("/EFG/Events/Event[EventId=\"" + sEventID
+	// + "\"]/" + sTag + "/text()");
+	// result = expr.evaluate(docEFG, XPathConstants.NODESET);
+	// nodes = (NodeList) result;
+	// if (nodes.getLength() > 0)
+	// sWidgetID = nodes.item(0).getNodeValue();
+	// } catch (XPathExpressionException e) {
+	// // TODO Auto-generated catch block
+	// }
+	// return sWidgetID;
+	// }
 
-    // /**
-    // * @return
-    // */
-    // private String getWidgetID_bak(String sTag, String sEventID) {
-    // String sWidgetID = null;
-    // // get widget ID
-    // XPath xpath = XPathFactory.newInstance().newXPath();
-    // XPathExpression expr;
-    // Object result;
-    // NodeList nodes;
-    // try {
-    //
-    // expr = xpath.compile("/EFG/Events/Event[EventId=\"" + sEventID
-    // + "\"]/" + sTag + "/text()");
-    // result = expr.evaluate(docEFG, XPathConstants.NODESET);
-    // nodes = (NodeList) result;
-    // if (nodes.getLength() > 0)
-    // sWidgetID = nodes.item(0).getNodeValue();
-    // } catch (XPathExpressionException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // return sWidgetID;
-    // }
+	// /**
+	// * @return
+	// */
+	// private String getWidgetID_bak(String sTag, String sEventID) {
+	// String sWidgetID = null;
+	// // get widget ID
+	// XPath xpath = XPathFactory.newInstance().newXPath();
+	// XPathExpression expr;
+	// Object result;
+	// NodeList nodes;
+	// try {
+	//
+	// expr = xpath.compile("/EFG/Events/Event[EventId=\"" + sEventID
+	// + "\"]/" + sTag + "/text()");
+	// result = expr.evaluate(docEFG, XPathConstants.NODESET);
+	// nodes = (NodeList) result;
+	// if (nodes.getLength() > 0)
+	// sWidgetID = nodes.item(0).getNodeValue();
+	// } catch (XPathExpressionException e) {
+	// // TODO Auto-generated catch block
+	// }
+	// return sWidgetID;
+	// }
 
-    /**
-     * Get the replayer monitor
-     * 
-     * @return the replayer monitor
-     */
-    public GReplayerMonitor getMonitor() {
-        return monitor;
-    }
+	/**
+	 * Get the replayer monitor
+	 * 
+	 * @return the replayer monitor
+	 */
+	public GReplayerMonitor getMonitor() {
+		return monitor;
+	}
 
-    /**
-     * @param monitor
-     *            the replayer monitor to set
-     */
-    public void setMonitor(GReplayerMonitor monitor) {
-        this.monitor = monitor;
-    }
+	/**
+	 * @param monitor
+	 *            the replayer monitor to set
+	 */
+	public void setMonitor(GReplayerMonitor monitor) {
+		this.monitor = monitor;
+	}
 
-    /**
-     * 
-     * Add a test monitor
-     * 
-     * <p>
-     * 
-     * @param aTestMonitor
-     */
-    public void addTestMonitor(GTestMonitor aTestMonitor) {
-        aTestMonitor.setReplayer(this);
-        this.lTestMonitor.add(aTestMonitor);
-    }
+	/**
+	 * 
+	 * Add a test monitor
+	 * 
+	 * <p>
+	 * 
+	 * @param aTestMonitor
+	 */
+	public void addTestMonitor(GTestMonitor aTestMonitor) {
+		aTestMonitor.setReplayer(this);
+		this.lTestMonitor.add(aTestMonitor);
+	}
 
-    /**
-     * Remove a test monitor
-     * 
-     * <p>
-     * 
-     * @param mTestMonitor
-     */
-    public void removeTestMonitor(GTestMonitor mTestMonitor) {
-        this.lTestMonitor.remove(mTestMonitor);
-    }
+	/**
+	 * Remove a test monitor
+	 * 
+	 * <p>
+	 * 
+	 * @param mTestMonitor
+	 */
+	public void removeTestMonitor(GTestMonitor mTestMonitor) {
+		this.lTestMonitor.remove(mTestMonitor);
+	}
 
 }
