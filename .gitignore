@@ -3,4 +3,7 @@
 /ripper-core/target
 /replayer-core/target
 
+# Stuff left over from JAXB 
+/model-core/generated-sources
+
 # EGit needs trailing newline
