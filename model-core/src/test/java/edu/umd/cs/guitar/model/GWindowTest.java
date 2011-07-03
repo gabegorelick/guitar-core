@@ -5,15 +5,18 @@
 
 package edu.umd.cs.guitar.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import junit.framework.TestCase;
+
+import org.easymock.classextension.EasyMock;
+
 import edu.umd.cs.guitar.model.data.ComponentType;
 import edu.umd.cs.guitar.model.data.GUIType;
 import edu.umd.cs.guitar.model.data.PropertyType;
 import edu.umd.cs.guitar.model.wrapper.ComponentTypeWrapper;
 import edu.umd.cs.guitar.model.wrapper.PropertyTypeWrapper;
-import java.util.ArrayList;
-import java.util.List;
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
 
 /**
  *
@@ -126,22 +129,6 @@ public class GWindowTest extends TestCase {
         assertEquals(false,instance.isRoot);
     }
 
-    /**
-     * Test of getFirstChildByID method, of class GWindow.
-     */
-    public void testGetFirstChildByID() {
-        System.out.println("getFirstChildByID");
-        GComponent container = EasyMock.createMock(GComponent.class);
-        EasyMock.expect(container.getFirstChildByID("Test Case")).andReturn(container);
-        EasyMock.replay(container);
-
-        GWindowImpl instance = new GWindowImpl();
-        instance.container = container;
-        GComponent result = instance.getFirstChildByID("Test Case");
-
-        assertEquals(container, result);
-    }
-
     public class GWindowImpl extends GWindow {
         String fullID;
         boolean modal;
@@ -182,6 +169,18 @@ public class GWindowTest extends TestCase {
 		
 		public String getTitle(){
 		return null;//real value needs to be put here
+		}
+
+		@Override
+		public int getX() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getY() {
+			// TODO Auto-generated method stub
+			return 0;
 		}
     }
 

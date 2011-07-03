@@ -157,45 +157,6 @@ public class GComponentTest extends TestCase {
 
     }
 
-
-
-    /**
-     * Test of getFirstChildByID method, of class GComponent.
-     */
-    public void testGetFirstChildByID() {
-        System.out.println("getFirstChildByID");
-        GComponentImpl instance;
-
-        /* Test 1 - sID equals fullID */
-        instance = new GComponentImpl();
-        instance.fullID = "This";
-        assertEquals(instance, instance.getFirstChildByID("This"));
-
-        /* Test 2 - sID does not equal fullID
-         * getChildren returns empty list so result is null
-         */
-        instance = new GComponentImpl();
-        instance.fullID = "Not This";
-        instance.children = new ArrayList();
-        assertEquals(null, instance.getFirstChildByID("This"));
-
-        /* Test 3 - sID does not equal fullID
-         * getChildren has 2 elements, second one  that matches
-         */
-        instance = new GComponentImpl();
-        instance.fullID = "Not This";
-        instance.children = new ArrayList();
-        GComponentImpl child1 = new GComponentImpl();
-        GComponentImpl child2 = new GComponentImpl();
-        child1.fullID = "Not This Either";
-        child2.fullID = "This";
-        child1.children= new ArrayList();
-        child2.children= new ArrayList();
-        instance.children.add(child1);
-        instance.children.add(child2);
-        assertEquals(child2, instance.getFirstChildByID("This"));
-    }
-
     /**
      * Test of getFirstChild method, of class GComponent.
      */
@@ -266,6 +227,10 @@ public class GComponentTest extends TestCase {
         List<PropertyType> guiProperties;
         String fullID;
         List<GComponent> children;
+        
+        public GComponentImpl() {
+        	super(null);
+        }
 
         public List<GComponent> getChildren() {
             return children;
@@ -313,6 +278,18 @@ public class GComponentTest extends TestCase {
 		
 		public String getTitle(){
 		return null;//real value needs to be put here
+		}
+
+		@Override
+		public int getX() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getY() {
+			// TODO Auto-generated method stub
+			return 0;
 		}
     }
 
