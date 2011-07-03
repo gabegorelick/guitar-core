@@ -1,11 +1,33 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>guitar</artifactId>
-    <groupId>edu.umd.cs</groupId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-  </parent>
-  <groupId>edu.umd.cs.guitar</groupId>
-  <artifactId>ripper-core</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>guitar</artifactId>
+		<groupId>edu.umd.cs</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<groupId>edu.umd.cs.guitar</groupId>
+	<artifactId>ripper-core</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>edu.umd.cs.guitar</groupId>
+			<artifactId>model-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- TODO make common parent POM for ripper-core and replayer-core -->
+		<dependency>
+			<groupId>args4j</groupId>
+			<artifactId>args4j</artifactId>
+			<version>2.0.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans</groupId>
+			<artifactId>jemmy</artifactId>
+			<version>2.2.7.5</version>
+		</dependency>
+	</dependencies>
 </project>
