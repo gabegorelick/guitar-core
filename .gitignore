@@ -1,0 +1,6 @@
+# I don't trust pattern matching
+/model-core/target
+/ripper-core/target
+/replayer-core/target
+
+# EGit needs trailing newline
