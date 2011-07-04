@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import edu.umd.cs.guitar.model.GHashcodeGenerator;
 import edu.umd.cs.guitar.model.GComponent;
 import edu.umd.cs.guitar.model.GIDGenerator;
 import edu.umd.cs.guitar.model.GUITARConstants;
@@ -109,6 +108,7 @@ public class Ripper {
 //	}
 
 	LinkedList<GComponentFilter> lComponentFilter = new LinkedList<GComponentFilter>();
+	@SuppressWarnings("deprecation")
 	LinkedList<GWindowFilter> lWindowFilter = new LinkedList<GWindowFilter>();;
 
 	static ObjectFactory factory = new ObjectFactory();
@@ -222,6 +222,7 @@ public class Ripper {
 	 * @param gWindow
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public GUIType ripWindow(GWindow gWindow) {
 
 		GUITARLog.log.info("----------------------------");
@@ -291,11 +292,6 @@ public class Ripper {
 		
 			retComp = component.extractProperties();
 			ComponentTypeWrapper compA = new ComponentTypeWrapper(retComp);
-
-			GUIType retWindow = null;
-
-			if (window != null)
-				retWindow = window.extractGUIProperties();
 
 //			long hashCode = hashcodeGenerator.getHashcodeFromGUI(component,window);
 //
@@ -524,31 +520,6 @@ public class Ripper {
 	 */
 	public void setMonitor(GRipperMonitor monitor) {
 		this.monitor = monitor;
-	}
-
-	/**
-	 * 
-	 * Add a window filter
-	 * 
-	 * @param filter
-	 */
-	public void addWindowFilter(GWindowFilter filter) {
-		if (this.lWindowFilter == null) {
-			lWindowFilter = new LinkedList<GWindowFilter>();
-		}
-		lWindowFilter.addLast(filter);
-		filter.setRipper(this);
-	}
-
-	/**
-	 * 
-	 * Remove a window filter
-	 * 
-	 * @param filter
-	 */
-	public void removeWindowFilter(GWindowFilter filter) {
-		lWindowFilter.remove(filter);
-		filter.setRipper(null);
 	}
 
 	/**
