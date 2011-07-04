@@ -36,16 +36,16 @@
 				<configuration>
 					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 					<generateDirectory>src/main/java</generateDirectory>
-					<removeOldOutput>false</removeOldOutput>
 					<generatePackage>edu.umd.cs.guitar.model.data</generatePackage>
 					<args>
-						<arg>-Xsetters</arg>
+						<arg>-Xcollection-setter-injector</arg>
 					</args>
 					<plugins>
+						<!-- See http://stackoverflow.com/questions/1032152/unmarshalling-collections-in-jaxb/2014894#2014894-->
 						<plugin>
-							<groupId>org.jvnet.jaxb2_commons</groupId>
-							<artifactId>jaxb2-basics</artifactId>
-							<version>0.5.3</version>
+							<groupId>net.java.dev.vcc.thirdparty</groupId>
+							<artifactId>collection-setter-injector</artifactId>
+							<version>0.5.0-1</version>
 						</plugin>
 					</plugins>
 				</configuration>
@@ -60,7 +60,7 @@
 			</plugin>
 
 		</plugins>
-		
+
 		<!-- suppress m2e warnings about JAXB plugin -->
 		<pluginManagement>
 			<plugins>
