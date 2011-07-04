@@ -196,25 +196,6 @@ public class AttributesTypeWrapperTest extends TestCase {
         result = instance.contains(tofind);
         assertEquals(expResult, result);
 
-        /* Test 3 - property list has two elements, tofind is in list of properties,
-          tofind's value is null */
-        expResult = true;
-
-        tofind = new PropertyType();
-        tofind.setName("At 2");
-        tofind.setValue(null);
-
-        proplist = new ArrayList();
-        proplist.add(new PropertyType());
-        proplist.get(0).setName("At 1");
-        proplist.get(0).setValue(new ArrayList());
-        proplist.add(tofind);
-        instance = new AttributesTypeWrapper(new AttributesType());
-        instance.dAtrributeType.setProperty(proplist);
-
-        result = instance.contains(tofind);
-        assertEquals(expResult, result);
-
         /* Test 4 - property list has two elements, tofind is in list of properties,
           tofind's value is not null but matching property's value is empty list */
         expResult = true;

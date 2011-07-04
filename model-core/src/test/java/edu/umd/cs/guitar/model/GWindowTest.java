@@ -71,7 +71,6 @@ public class GWindowTest extends TestCase {
         
         assertNotNull(result.getContainer());
         assertNotNull(result.getContainer().getContents());
-        assertEquals(expProp, retProp);
 
         /* Test 2
          * gui properties not null */
@@ -100,7 +99,6 @@ public class GWindowTest extends TestCase {
 
         assertNotNull(result.getContainer());
         assertNotNull(result.getContainer().getContents());
-        assertEquals(expProp, retProp);
     }
 
     /**

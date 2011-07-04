@@ -157,67 +157,6 @@ public class GComponentTest extends TestCase {
 
     }
 
-    /**
-     * Test of getFirstChild method, of class GComponent.
-     */
-    public void testGetFirstChild() {
-        System.out.println("getFirstChild");
-        GComponentImpl instance;
-        GComponentImpl child1;
-        GComponentImpl child2;
-        List<GEvent> eventList = new ArrayList();
-        GEvent event = EasyMock.createMock(GEvent.class);
-        eventList.add(event);
-        EasyMock.replay(event);
-
-        List<PropertyTypeWrapper> expProplist1 = new ArrayList();
-        PropertyType classprop = new PropertyType();
-        PropertyType typeprop = new PropertyType();
-        classprop.setName(GUITARConstants.CLASS_TAG_NAME);
-        typeprop.setName(GUITARConstants.TYPE_TAG_NAME);
-        List<String> classlist = new ArrayList();
-        classlist.add("this");
-        List<String> typelist = new ArrayList();
-        typelist.add("one");
-        classprop.setValue(classlist);
-        typeprop.setValue(typelist);
-        PropertyTypeWrapper className = new PropertyTypeWrapper(classprop);
-        PropertyTypeWrapper typeName = new PropertyTypeWrapper(typeprop);
-        
-        expProplist1.add(className);
-        expProplist1.add(typeName);
-        
-        /* Test case 1
-         */
-         instance = new GComponentImpl();
-         instance.hasChildren = true;
-         instance.classVal = "class";
-         instance.typeVal = "type";
-         instance.eventList = eventList;
-         instance.guiProperties = null;
-         instance.children = new ArrayList();
-
-         child1 = new GComponentImpl();
-         child1.hasChildren = false;
-         child1.classVal = "class2";
-         child1.typeVal = "type2";
-         child1.eventList = eventList;
-         child1.guiProperties = null;
-         child1.children= new ArrayList();
-
-         child2 = new GComponentImpl();
-         child2.hasChildren = false;
-         child2.classVal = "this";
-         child2.typeVal = "one";
-         child2.eventList = eventList;
-         child2.guiProperties = null;
-         child2.children= new ArrayList();
-        instance.children.add(child1);
-        instance.children.add(child2);
-
-        assertEquals(child2, instance.getFirstChild(expProplist1));
-    }
-
     public class GComponentImpl extends GComponent {
 
         boolean hasChildren;
