@@ -29,7 +29,6 @@ import edu.umd.cs.guitar.model.data.GUIStructure;
 import edu.umd.cs.guitar.model.data.GUIType;
 import edu.umd.cs.guitar.model.data.ObjectFactory;
 import edu.umd.cs.guitar.model.data.PropertyType;
-import edu.umd.cs.guitar.model.wrapper.ComponentTypeWrapper;
 import edu.umd.cs.guitar.model.wrapper.GUITypeWrapper;
 
 /**

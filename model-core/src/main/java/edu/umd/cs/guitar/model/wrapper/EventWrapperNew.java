@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import edu.umd.cs.guitar.model.GUITARConstants;
-import edu.umd.cs.guitar.model.data.EventType;
 
 /**
  * This is a new version of EFGConverter 
@@ -111,11 +110,6 @@ public class EventWrapperNew {
 				.getFirstValueByName(GUITARConstants.ID_TAG_NAME);
 		String otherID = secondComponent
 				.getFirstValueByName(GUITARConstants.ID_TAG_NAME);
-
-		String sTitle = firstComponent
-				.getFirstValueByName(GUITARConstants.TITLE_TAG_NAME);
-		String otherTitle = secondComponent
-				.getFirstValueByName(GUITARConstants.TITLE_TAG_NAME);
 
 		// System.out.println("-----------------------------");
 		//	System.out.println("Analyzing " + sTitle + "->" + otherTitle);
@@ -259,9 +253,6 @@ public class EventWrapperNew {
 	public boolean isHidden() {
 		ComponentTypeWrapper parent = this.component.getParent();
 		while (parent != null) {
-			String action = parent
-					.getFirstValueByName(GUITARConstants.EVENT_TAG_NAME);
-
 			parent = parent.getParent();
 		}
 		return false;

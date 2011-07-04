@@ -40,14 +40,6 @@ import edu.umd.cs.guitar.model.wrapper.PropertyTypeWrapper;
 public abstract class GComponent implements GObject {
 
 	/**
-     * 
-     */
-
-	private static int ID_COUNTER = 0;
-
-	private int ID;
-
-	/**
 	 * Container window
 	 */
 	GWindow window;
@@ -58,7 +50,6 @@ public abstract class GComponent implements GObject {
 	public GComponent(GWindow window) {
 		super();
 		this.window = window;
-		this.ID = ID_COUNTER++;
 	}
 
 	/**

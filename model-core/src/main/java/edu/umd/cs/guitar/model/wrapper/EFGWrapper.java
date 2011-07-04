@@ -92,8 +92,6 @@ public class EFGWrapper
                     .getFirstValueByName(GUITARConstants.ID_TAG_NAME));
          dEvent.setAction(wEvent.action);
 
-         String eventType;
-
          dEvent.setEventId(EVENT_NAME_PREFIX+ wEventList.indexOf(wEvent));
 
          dEventList.getEvent().add(dEvent);
@@ -102,10 +100,7 @@ public class EFGWrapper
       efg.setEvents(dEventList);
 
       eventGraph = new ArrayList<List<String>>();
-      for (List<String> row : eventGraph) {
-         row = new ArrayList<String>();
-      }
-
+     
       EventGraphType dEventGraph = factory.createEventGraphType();
 
       List<RowType> lRowList = new ArrayList<RowType>();

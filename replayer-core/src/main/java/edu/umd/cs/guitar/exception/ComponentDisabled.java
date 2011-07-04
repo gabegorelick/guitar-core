@@ -24,7 +24,9 @@ package edu.umd.cs.guitar.exception;
  */
 public class ComponentDisabled extends GException {
 
-    /**
+	private static final long serialVersionUID = -2497514293944536644L;
+
+	/**
      * 
      */
     public ComponentDisabled() {

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import edu.umd.cs.guitar.model.GUITARConstants;
-import edu.umd.cs.guitar.model.data.EventType;
 
 /**
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
@@ -106,8 +105,7 @@ public class EventWrapper {
 
 		String ID = firstComponent
 				.getFirstValueByName(GUITARConstants.ID_TAG_NAME);
-		String otherID = secondComponent
-				.getFirstValueByName(GUITARConstants.ID_TAG_NAME);
+		
 
 		// System.out.println("-----------------------------");
 		// System.out.println("Analyzing " + ID + "->" + otherID);
@@ -246,12 +244,9 @@ public class EventWrapper {
 	public boolean isHidden() {
 		ComponentTypeWrapper parent = this.component.getParent();
 		while (parent != null) {
-			String action = parent
-					.getFirstValueByName(GUITARConstants.EVENT_TAG_NAME);
-
 			parent = parent.getParent();
 		}
-		return false;
+		return false; // TODO this doesn't make sense
 	}
 
 	/**

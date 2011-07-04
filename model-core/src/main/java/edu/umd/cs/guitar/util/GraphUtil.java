@@ -35,7 +35,6 @@ import edu.umd.cs.guitar.model.GUITARConstants;
 import edu.umd.cs.guitar.model.data.EFG;
 import edu.umd.cs.guitar.model.data.EventGraphType;
 import edu.umd.cs.guitar.model.data.EventType;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 
 /**

@@ -76,8 +76,6 @@ public class Replayer {
 	 * Test case data
 	 */
 	private TestCase tc;
-	private String sGUIFfile;
-	private String sEFGFfile;
 
 	// Test Monitor
 	private GReplayerMonitor monitor;
@@ -105,8 +103,6 @@ public class Replayer {
 			throws ParserConfigurationException, SAXException, IOException {
 		super();
 		this.tc = tc;
-		this.sGUIFfile = sGUIFile;
-		this.sEFGFfile = sEFGFile;
 
 		// Initialize GUI object
 		GUIStructure gui = (GUIStructure) IO.readObjFromFile(sGUIFile,
@@ -124,19 +120,6 @@ public class Replayer {
 		builder = domFactory.newDocumentBuilder();
 		docGUI = builder.parse(sGUIFile);
 		// docEFG = builder.parse(sEFGFile);
-	}
-
-	/**
-	 * Time out for the replayer TODO: Move to a monitor
-	 */
-	private int TIME_OUT = 0;
-
-	/**
-	 * @param nTimeOut
-	 *            the nTimeOut to set
-	 */
-	public void setTimeOut(int nTimeOut) {
-		this.TIME_OUT = nTimeOut;
 	}
 
 	/**
@@ -212,42 +195,6 @@ public class Replayer {
 		} finally {
 			monitor.cleanUp();
 		}
-	}
-
-	/**
-	 * A helper method to move the execution to another thread
-	 * 
-	 * @throws ComponentNotFound
-	 * 
-	 */
-	@Deprecated
-	private void executeThread() throws ComponentNotFound {
-
-		monitor.setUp();
-		log.info("Connecting to application");
-		monitor.connectToApplication();
-
-		// Monitor before the test case
-		for (GTestMonitor monitor : lTestMonitor) {
-			monitor.init();
-		}
-
-		log.info("Executing test case");
-		log.info("" + tc.getStep().size());
-
-		List<StepType> lSteps = tc.getStep();
-		int nStep = lSteps.size();
-
-		for (int i = 0; i < nStep; i++) {
-			log.info("---------------------");
-			StepType step = lSteps.get(i);
-			executeStep(step);
-		}
-		// Monitor after the test case
-		for (GTestMonitor monitor : lTestMonitor) {
-			monitor.term();
-		}
-		monitor.cleanUp();
 	}
 
 	/**

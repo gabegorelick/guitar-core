@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import edu.umd.cs.guitar.model.GComponent;
 import edu.umd.cs.guitar.model.GHashcodeGenerator;
 import edu.umd.cs.guitar.model.GUITARConstants;
 import edu.umd.cs.guitar.model.data.AttributesType;
