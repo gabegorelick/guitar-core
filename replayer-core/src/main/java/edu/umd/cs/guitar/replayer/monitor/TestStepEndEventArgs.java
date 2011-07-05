@@ -31,6 +31,9 @@ public class TestStepEndEventArgs extends TestStepEventArgs  {
     }
     
 
+    public ComponentType getComponentType() {
+    	return component;
+    }
     
 
 }

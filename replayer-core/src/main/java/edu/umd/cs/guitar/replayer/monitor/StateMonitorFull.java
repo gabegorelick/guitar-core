@@ -255,5 +255,25 @@ public class StateMonitorFull extends GTestMonitor {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public TestCase getTestCase() {
+		return outTestCase;
+	}
+	
+	public GReplayerMonitor getMonitor() {
+		return monitor;
+	}
+	
+	public Set<String> getInitialWindows() {
+		return windowsBeforeStep;
+	}
+	
+	public void setInitialWindows(Set<String> windows) {
+		windowsBeforeStep = windows;
+	}
+	
+	public String getStateFile() {
+		return sStateFile;
+	}
 
 }

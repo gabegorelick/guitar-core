@@ -149,7 +149,7 @@ public abstract class GRipperMonitor {
      * @param window
         * @return true/false
      */
-    abstract boolean isExpandable(GComponent component, GWindow window);
+    protected abstract boolean isExpandable(GComponent component, GWindow window);
 
     /**
      * @return the ripper
@@ -218,6 +218,6 @@ public abstract class GRipperMonitor {
     /**
         * @return list of closedwindows
      */
-    abstract LinkedList<GWindow> getClosedWindowCache();
+    protected abstract LinkedList<GWindow> getClosedWindowCache();
 
 }
