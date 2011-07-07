@@ -29,8 +29,6 @@ import edu.umd.cs.guitar.model.data.ObjectFactory;
 import edu.umd.cs.guitar.model.data.StepType;
 import edu.umd.cs.guitar.model.data.TestCase;
 import edu.umd.cs.guitar.replayer.GReplayerMonitor;
-import edu.umd.cs.guitar.replayer.monitor.GTestMonitor;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
@@ -102,13 +100,7 @@ public class StateMonitor extends GTestMonitor {
      * .TestStepEventArgs)
      */
     @Override
-    public void afterStep(TestStepEndEventArgs eStep) {
-
-        GUITARLog.log.info("Delaying for ");
-        GUITARLog.log.info("Recording GUI state....");
-        
-        
-
+    public void afterStep(TestStepEndEventArgs eStep) {   
         List<StepType> lSteps = outTestCase.getStep();
 
         StepType step = eStep.getStep();
@@ -120,10 +112,7 @@ public class StateMonitor extends GTestMonitor {
         step.setGUIStructure(gCurrentState);
         lSteps.add(step);
         outTestCase.setStep(lSteps);
-        GUITARLog.log.info("DONE");
-        GUITARLog.log.info("Dumping out state ... ");
         IO.writeObjToFile(outTestCase, sStateFile);
-        GUITARLog.log.info("DONE");
     }
 
     /*

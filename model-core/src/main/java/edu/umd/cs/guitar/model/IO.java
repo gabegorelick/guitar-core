@@ -31,7 +31,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import edu.umd.cs.guitar.util.GUITARLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -41,6 +42,8 @@ import edu.umd.cs.guitar.util.GUITARLog;
  */
 // @Deprecated
 public class IO {
+	
+	private static Logger logger = LoggerFactory.getLogger(IO.class);
 
     /**
      * Read an object from a XML file
@@ -63,7 +66,7 @@ public class IO {
             retObj = u.unmarshal(is);
 
         } catch (JAXBException e) {
-			GUITARLog.log.error(e);
+			logger.error("Error unmarshalling", e);
         }
         return retObj;
     }
@@ -82,7 +85,7 @@ public class IO {
         try {
             retObj = readObjFromFile(new FileInputStream(sFileName), cls);
         } catch (FileNotFoundException e) {
-        	GUITARLog.log.error(sFileName + " not found!!!");
+        	logger.error("File {} not found", sFileName);
         }
         return retObj;
     }
@@ -106,10 +109,9 @@ public class IO {
             marshaller.marshal(object, os);
             os.close();
         } catch (JAXBException e) {
-			GUITARLog.log.error(e);
+			logger.error("Error marshalling", e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-			GUITARLog.log.error(e);
+        	logger.error("Error marshalling", e);
         }
     }
 
@@ -127,7 +129,7 @@ public class IO {
         try {
             writeObjToFile(object, new FileOutputStream(sFileName));
         } catch (FileNotFoundException e) {
-            GUITARLog.log.error(sFileName + " NOT FOUND!!!");
+            logger.error("File {} not found", sFileName);
         }
     }
 }

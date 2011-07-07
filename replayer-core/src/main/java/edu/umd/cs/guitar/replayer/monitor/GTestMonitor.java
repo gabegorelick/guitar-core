@@ -21,7 +21,6 @@ package edu.umd.cs.guitar.replayer.monitor;
 
 import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.replayer.Replayer;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 //import edu.umd.cs.guitar.guitestrunner.TestCaseStepEventArgs;
 
@@ -34,13 +33,12 @@ import edu.umd.cs.guitar.util.GUITARLog;
  */
 
 public abstract class GTestMonitor {
-
+	
     /**
 	 * 
 	 */
 	public GTestMonitor() {
 		super();
-		GUITARLog.log.info("Test monitor: " + this.getClass().getCanonicalName() +" is created");
 	}
 
 	Replayer replayer;

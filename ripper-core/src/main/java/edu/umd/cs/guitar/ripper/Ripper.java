@@ -24,7 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.umd.cs.guitar.model.GComponent;
 import edu.umd.cs.guitar.model.GIDGenerator;
@@ -40,7 +41,6 @@ import edu.umd.cs.guitar.model.data.GUIType;
 import edu.umd.cs.guitar.model.data.ObjectFactory;
 import edu.umd.cs.guitar.model.wrapper.ComponentTypeWrapper;
 import edu.umd.cs.guitar.ripper.filter.GComponentFilter;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * 
@@ -52,6 +52,8 @@ import edu.umd.cs.guitar.util.GUITARLog;
  * 
  */
 public class Ripper {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Ripper.class);
 
 	/**
 	 * 
@@ -123,27 +125,10 @@ public class Ripper {
 	ComponentListType lCloseWindowComp;
 
 	/**
-	 * @return the log
-	 */
-	public Logger getLog() {
-		return log;
-	}
-
-	/**
 	 * @return the lOpenWindowComps
 	 */
 	public ComponentListType getlOpenWindowComps() {
 		return lOpenWindowComps;
-	}
-
-	Logger log;
-
-	/**
-	 * @param log
-	 *            the log to set
-	 */
-	public void setLog(Logger log) {
-		this.log = log;
 	}
 
 	/**
@@ -153,18 +138,10 @@ public class Ripper {
 	 * @param logger
 	 *            External logger
 	 */
-	public Ripper(Logger logger) {
+	public Ripper() {
 		super();
-		this.log = logger;
 		lOpenWindowComps = factory.createComponentListType();
 		lCloseWindowComp = factory.createComponentListType();
-	}
-
-	/**
-	 * Constructor without logger
-	 */
-	public Ripper() {
-		this(Logger.getLogger("Ripper"));
 	}
 
 	/**
@@ -176,7 +153,7 @@ public class Ripper {
 	public void execute() {
 
 		if (monitor == null) {
-			GUITARLog.log.error("Monitor hasn't been assigned");
+			logger.error("Monitor hasn't been assigned");
 			return;
 		}
 		// 1. Set Up the environment
@@ -186,11 +163,11 @@ public class Ripper {
 		List<GWindow> gRootWindows = monitor.getRootWindows();
 
 		if (gRootWindows == null) {
-			GUITARLog.log.warn("No root window");
+			logger.warn("No root window");
 			return;
 		}
 
-		GUITARLog.log.info("Number of root windows: " + gRootWindows.size());
+		logger.info("Number of root windows: {}", gRootWindows.size());
 
 		// 3. Main step: ripping starting from
 		// each root window in the list
@@ -205,7 +182,7 @@ public class Ripper {
 		// 4. Generate ID for widgets 
 		
 		if(this.idGenerator==null){
-			GUITARLog.log.warn("No ID generator assigned");
+			logger.warn("No ID generator assigned");
 		}else{
 			idGenerator.generateID(dGUIStructure);
 		}
@@ -224,15 +201,10 @@ public class Ripper {
 	 */
 	@SuppressWarnings("deprecation")
 	public GUIType ripWindow(GWindow gWindow) {
-
-		GUITARLog.log.info("----------------------------");
-		GUITARLog.log.info("Ripping window: *" + gWindow.getTitle() + "*");
-
 		// 1. Rip special/customized components
 		for (GWindowFilter wf : lWindowFilter) {
 			if (wf.isProcess(gWindow)) {
-				GUITARLog.log.info("Window filter "
-						+ wf.getClass().getSimpleName() + " is applied");
+				logger.info("Window filter {} is applied", wf.getClass().getSimpleName());
 				return wf.ripWindow(gWindow);
 			}
 		}
@@ -253,7 +225,7 @@ public class Ripper {
 			return retGUI;
 
 		} catch (Exception e) {
-			GUITARLog.log.error("Exception during ripping window ", e);
+			logger.error("Exception ripping window ", e);
 			return null;
 		}
 	}
@@ -268,17 +240,10 @@ public class Ripper {
 	 * @return
 	 */
 	public ComponentType ripComponent(GComponent component, GWindow window) {
-		GUITARLog.log.info("");
-		GUITARLog.log.info("----------------------------------");
-		GUITARLog.log.info("Ripping component: ");
-
-		printComponentInfo(component, window);
-
 		// 1. Rip special/customized components
 		for (GComponentFilter cm : lComponentFilter) {
 			if (cm.isProcess(component, window)) {
-				GUITARLog.log.info("Filter " + cm.getClass().getSimpleName()
-						+ " is applied");
+				logger.info("Filter {} is applied", cm.getClass().getSimpleName());
 
 				return cm.ripComponent(component, window);
 			}
@@ -308,7 +273,7 @@ public class Ripper {
 			if (monitor.isExpandable(component, window))
 				monitor.expandGUI(component);
 			else {
-				GUITARLog.log.info("Component is Unexpandable");
+				logger.info("Component is Unexpandable");
 			}
 
 			// Trigger terminal widget
@@ -323,16 +288,11 @@ public class Ripper {
 				// LinkedList<GWindow> lClosedWindows = monitor
 				// .getClosedWindowCache();
 
-				GUITARLog.log.debug("!!!!! Window closed");
-
 				for (GWindow closedWin : lClosedWindows) {
 					String sClosedWinTitle = closedWin.getTitle();
 
 					// Only consider widget closing the current window
 					if (sWinID.equals(sClosedWinTitle)) {
-
-						GUITARLog.log.debug("\t" + sClosedWinTitle);
-
 						List<FullComponentType> lCloseComp = lCloseWindowComp
 								.getFullComponent();
 
@@ -362,12 +322,6 @@ public class Ripper {
 				LinkedList<GWindow> lNewWindows = monitor
 						.getOpenedWindowCache();
 				monitor.resetWindowCache();
-				GUITARLog.log.info(lNewWindows.size()
-						+ " new window(s) opened!!!");
-				for (GWindow newWins : lNewWindows) {
-					GUITARLog.log
-							.info("*\t Title:*" + newWins.getTitle() + "*");
-				}
 
 				// Process the opened windows in a FIFO order
 				while (!lNewWindows.isEmpty()) {
@@ -384,7 +338,7 @@ public class Ripper {
 								GUITARConstants.INVOKELIST_TAG_NAME,
 								sWindowTitle);
 
-						GUITARLog.log.debug(sWindowTitle + " recorded");
+						logger.debug("{} recorded", sWindowTitle);
 
 						retComp = compA.getDComponentType();
 
@@ -405,11 +359,11 @@ public class Ripper {
 								if (dWindow != null)
 									dGUIStructure.getGUI().add(dWindow);
 							} else {
-								GUITARLog.log.info("Window is ripped!!!");
+								logger.info("Ripped window {}", sWindowTitle);
 							}
 
 						} else {
-							GUITARLog.log.info("Window is ignored!!!");
+							logger.info("Ignored window {}", sWindowTitle);
 						}
 					}
 					monitor.closeWindow(gNewWin);
@@ -432,8 +386,8 @@ public class Ripper {
 				lChildren += gChildrenList.get(j).getTitle() + " - "
 						+ gChildrenList.get(j).getClassVal() + "; ";
 			}
-			lChildren += "]";
-			GUITARLog.log.debug("*" + component.getTitle() + "* in window *"
+			lChildren += "]"; // TODO clean this up
+			logger.debug("*" + component.getTitle() + "* in window *"
 					+ window.getTitle() + "* has " + nChildren + " children: "
 					+ lChildren);
 
@@ -448,10 +402,7 @@ public class Ripper {
 			}
 
 		} catch (Exception e) {
-			// logOld.println("ripComponent exception");
-			// e.printStackTrace();
-			GUITARLog.log.error("ripComponent exception", e);
-
+			logger.error("ripComponent exception", e);
 			return null;
 		}
 		return retComp;
@@ -504,7 +455,7 @@ public class Ripper {
 		sComponentInfo += "</FullComponent>" + "\n";
 		sComponentInfo += "\n";
 
-		GUITARLog.log.info(sComponentInfo);
+		logger.info(sComponentInfo);
 	}
 
 	/**

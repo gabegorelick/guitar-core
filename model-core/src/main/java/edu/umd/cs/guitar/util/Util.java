@@ -39,6 +39,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.umd.cs.guitar.model.GUITARConstants;
 
 /**
@@ -48,6 +51,8 @@ import edu.umd.cs.guitar.model.GUITARConstants;
  * 
  */
 public class Util {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Util.class);
 
    /**
     * Hide the constructor
@@ -90,10 +95,8 @@ public class Util {
                retList.add(line);
             }
          }
-      } catch (FileNotFoundException e) {
-         GUITARLog.log.error(e);
       } catch (Exception e) {
-         GUITARLog.log.error( sFileName + " not found",e) ;
+         logger.error("{} not found", sFileName, e) ;
       }
 
       return retList;
@@ -116,11 +119,9 @@ public class Util {
             }
          }
       } catch (FileNotFoundException e) {
-         // TODO Auto-generated catch block
-         GUITARLog.log.error(e);
+         logger.error("File {} not found", sFileName, e);
       } catch (IOException e) {
-         // TODO Auto-generated catch block
-         GUITARLog.log.error(e);
+         logger.error("Error reading file {}", sFileName, e);
       }
    }
 

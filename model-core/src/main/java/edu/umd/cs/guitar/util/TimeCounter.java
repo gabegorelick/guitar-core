@@ -23,6 +23,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Count time
  * 
@@ -30,6 +33,8 @@ import java.util.TimeZone;
  * 
  */
 public class TimeCounter {
+	
+	private static final Logger logger = LoggerFactory.getLogger(TimeCounter.class);
 
 	long nStartTime;
 
@@ -51,9 +56,8 @@ public class TimeCounter {
 	String name;
 
 	public void start() {
-		GUITARLog.log.info(this.getClass().getName() + " started.");
+		logger.info("Started {}", getClass().getName());
 		nStartTime = System.currentTimeMillis();
-
 	}
 
 	public void reset() {
@@ -77,9 +81,8 @@ public class TimeCounter {
 		// Elapsed time:
 		DateFormat df = new SimpleDateFormat("HH : mm : ss: SS");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		GUITARLog.log.info("Timer :" + name);
-		GUITARLog.log.info("Time Elapsed: " + df.format(duration()));
-
+		logger.info("Timer {}", name);
+		logger.info("Time Elapsed: {}", df.format(duration()));
 	}
 
 }

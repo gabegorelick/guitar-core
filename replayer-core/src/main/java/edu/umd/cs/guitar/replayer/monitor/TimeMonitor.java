@@ -19,9 +19,11 @@
  */
 package edu.umd.cs.guitar.replayer.monitor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.exception.TimeoutException;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * Monitor timeout for testcase
@@ -29,6 +31,8 @@ import edu.umd.cs.guitar.util.GUITARLog;
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
  */
 public class TimeMonitor extends GTestMonitor {
+	
+	private static final Logger logger = LoggerFactory.getLogger(TimeMonitor.class);
 
 	int nStepTimeout = 0;
 	int nTestcaseTimeout = 0;
@@ -56,8 +60,7 @@ public class TimeMonitor extends GTestMonitor {
 	 */
 	@Override
 	public void afterStep(TestStepEndEventArgs arg0) {
-		GUITARLog.log.info(tStepTimer.getTimerName() + " elapsed Time: "
-				+ tStepTimer.getElapsedTime());
+		logger.info("{} elapsed time: {}", tStepTimer.getTimerName(), tStepTimer.getElapsedTime());
 		tStepTimer.stopTimer();
 	}
 
@@ -80,8 +83,7 @@ public class TimeMonitor extends GTestMonitor {
 	 */
 	@Override
 	public void init() {
-		GUITARLog.log.info(this.getClass().getName()
-				+ " test monitor is applied");
+		logger.info("{} test monitor is applied", getClass().getName());
 		tStepTimer = new Timer("Step Timer", nStepTimeout);
 		tStepTimer.start();
 		nStartTime = System.currentTimeMillis();
@@ -113,7 +115,7 @@ public class TimeMonitor extends GTestMonitor {
 	@Override
 	public void exceptionHandler(GException e) {
 		if (e instanceof TimeoutException)
-			GUITARLog.log.error("TimeOut");
+			logger.error("TimeOut");
 	}
 
 }
@@ -127,6 +129,9 @@ public class TimeMonitor extends GTestMonitor {
  * 
  */
 class Timer extends Thread {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Timer.class);
+	
 	boolean isRunning = false;
 	long nStartTime;
 	String name;
@@ -168,7 +173,7 @@ class Timer extends Thread {
 	}
 
 	private void timeout() {
-		GUITARLog.log.info(name + ": TIMEOUT!!!");
+		logger.info("{} timed out", name);
 		System.setSecurityManager(null);
 		System.exit(1);
 	}
@@ -179,7 +184,7 @@ class Timer extends Thread {
 			try {
 				Thread.sleep(m_rate);
 			} catch (InterruptedException e) {
-				GUITARLog.log.error(e);
+				logger.error("Thread interrupted", e);
 			}
 			if (isRunning)
 				m_elapsed += m_rate;

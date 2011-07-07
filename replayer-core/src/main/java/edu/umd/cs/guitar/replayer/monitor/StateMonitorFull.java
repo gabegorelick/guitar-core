@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.netbeans.jemmy.QueueTool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.umd.cs.guitar.exception.GException;
 import edu.umd.cs.guitar.model.GApplication;
@@ -39,12 +41,13 @@ import edu.umd.cs.guitar.model.data.StepType;
 import edu.umd.cs.guitar.model.data.TestCase;
 import edu.umd.cs.guitar.model.wrapper.GUIStructureWrapper;
 import edu.umd.cs.guitar.replayer.GReplayerMonitor;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
  */
 public class StateMonitorFull extends GTestMonitor {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StateMonitorFull.class);
 
 	static ObjectFactory factory = new ObjectFactory();
 
@@ -159,8 +162,7 @@ public class StateMonitorFull extends GTestMonitor {
 	@Override
 	public void afterStep(TestStepEndEventArgs eStep) {
 
-		GUITARLog.log.info("Delaying for " + delay
-				+ " ms to get a stable GUI state....");
+		logger.info("Delaying for {} ms to get a stable GUI state....", delay);
 
 		new QueueTool().waitEmpty(delay);
 		// try {
@@ -170,7 +172,6 @@ public class StateMonitorFull extends GTestMonitor {
 		// GUITARLog.log.error(e);
 		// }
 
-		GUITARLog.log.info("Recording GUI state....");
 
 		List<StepType> lSteps = outTestCase.getStep();
 		StepType step = eStep.getStep();
@@ -187,11 +188,6 @@ public class StateMonitorFull extends GTestMonitor {
 		GUIStructureWrapper guiStateAdapter = new GUIStructureWrapper(guiState);
 		// guiStateAdapter.generateID(hashcodeGenerator);
 		if (windowsNew.size() > 0) {
-			GUITARLog.log.info("New window(s) open");
-			for (String sID : windowsNew)
-				GUITARLog.log.info(sID);
-			GUITARLog.log.debug("By component: ");
-
 			List<PropertyType> ID = monitor.selectIDProperties(eStep.component);
 			AttributesType signature = factory.createAttributesType();
 			signature.setProperty(ID);
@@ -204,16 +200,13 @@ public class StateMonitorFull extends GTestMonitor {
 		if (idGenerator != null)
 			idGenerator.generateID(guiState);
 		else
-			GUITARLog.log.warn("No ID Generator assigned");
+			logger.warn("No ID Generator assigned");
 
 		step.setGUIStructure(guiState);
 
 		lSteps.add(step);
 		outTestCase.setStep(lSteps);
-		GUITARLog.log.info("DONE");
-		GUITARLog.log.info("Dumping out state ... ");
 		IO.writeObjToFile(outTestCase, sStateFile);
-		GUITARLog.log.info("DONE");
 	}
 
 	/*

@@ -28,13 +28,6 @@
  */
 package edu.umd.cs.guitar.util;
 
-import java.io.IOException;
-
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 /**
  * Global runtime log for GUITAR
@@ -44,7 +37,7 @@ import org.apache.log4j.PatternLayout;
  * @author Bao Nguyen
  * 
  */
-public class GUITARLog {
+class GUITARLog {
  
    /**
     * 
@@ -52,8 +45,8 @@ public class GUITARLog {
    public static final
    String LOGFILE_NAME_SYSTEM_PROPERTY = "logfile.name";
  
-   public static
-   Logger log;
+   private static
+   org.slf4j.Logger log;
  
  
    /**
@@ -70,74 +63,6 @@ public class GUITARLog {
    String GUITAR_DEFAULT_LOG = "GUITAR-Default.log";
 
 
-   /**
-    * Logging level
-    */
-   private static
-   Level level = Level.DEBUG;
 
-
-   static {
-      log = Logger.getLogger("GUITARLog");
-
-      PatternLayout layout = new org.apache.log4j.PatternLayout();
-      layout.setConversionPattern(LOG_LAYOUT_PATTERN);
-
-      ConsoleAppender stdout = new ConsoleAppender(layout);
-      log.addAppender(stdout);
-
-      FileAppender file = null;
-
-      String logFileName = System.getProperty(LOGFILE_NAME_SYSTEM_PROPERTY);
-
-      if (logFileName == null) {
-         logFileName = GUITAR_DEFAULT_LOG;
-      }
-
-      try {
-         file = new FileAppender(layout, logFileName, false);
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-
-      log.addAppender(file);
-      log.setLevel(level);
-   }
-
-   /**
-    * Log the given string 'str' as Debug
-    *
-    * @return
-    */
-   public static
-   void Debug(String str) {
-      if (Level.DEBUG.isGreaterOrEqual(GUITARLog.level)) {
-         System.out.println("Debug: " + str);
-      }
-   }
-
-   /**
-    * Log the given string 'str' as Info.
-    *
-    * @return
-    */
-   public static
-   void Info(String str) {
-      if (Level.INFO.isGreaterOrEqual(GUITARLog.level)) {
-         System.out.println("Info: " + str);
-      }
-   }
-
-   /**
-    * Log the given string 'str' as Error.
-    *
-    * @return
-    */
-   public static
-   void Error(String str) {
-      if (Level.ERROR.isGreaterOrEqual(GUITARLog.level)) {
-         System.out.println("Error: " + str);
-      }
-   }
 
 } // End of class

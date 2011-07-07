@@ -30,7 +30,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import edu.umd.cs.guitar.util.GUITARLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -42,6 +43,8 @@ import edu.umd.cs.guitar.util.GUITARLog;
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
  */
 public class XMLHandler {
+	
+	private static final Logger logger = LoggerFactory.getLogger(XMLHandler.class);
 
     /**
      * Read an object from a XML file
@@ -64,7 +67,7 @@ public class XMLHandler {
             retObj = u.unmarshal(is);
 
         } catch (JAXBException e) {
-			GUITARLog.log.error(e);
+			logger.error("Error unmarshalling", e);
         }
         return retObj;
     }
@@ -109,9 +112,9 @@ public class XMLHandler {
             marshaller.marshal(object, os);
             os.close();
         } catch (JAXBException e) {
-			GUITARLog.log.error(e);
+			logger.error("Error marshalling", e);
         } catch (IOException e) {
-			GUITARLog.log.error(e);
+        	logger.error("Error marshalling", e);
         }
     }
 
@@ -129,7 +132,7 @@ public class XMLHandler {
         try {
             writeObjToFile(object, new FileOutputStream(sFileName));
         } catch (FileNotFoundException e) {
-			GUITARLog.log.error(e);
+			logger.error("File {} not found", sFileName);
         }
     }
 }

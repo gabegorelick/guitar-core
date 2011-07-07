@@ -24,6 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.umd.cs.guitar.model.GHashcodeGenerator;
 import edu.umd.cs.guitar.model.GUITARConstants;
 import edu.umd.cs.guitar.model.data.AttributesType;
@@ -32,7 +35,6 @@ import edu.umd.cs.guitar.model.data.GUIStructure;
 import edu.umd.cs.guitar.model.data.GUIType;
 import edu.umd.cs.guitar.model.data.ObjectFactory;
 import edu.umd.cs.guitar.model.data.PropertyType;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * Adapter class to process GUIType.
@@ -43,6 +45,9 @@ import edu.umd.cs.guitar.util.GUITARLog;
  * 
  */
 public class GUITypeWrapper {
+	
+	private Logger logger = LoggerFactory.getLogger(GUITypeWrapper.class);
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,7 +99,7 @@ public class GUITypeWrapper {
 	public void parseData(GUIStructure dGUIStructure,
 			GUIStructureWrapper wGUIStructure) {
 
-		GUITARLog.log.debug("Parsing window: " + this.getTitle());
+		logger.debug("Parsing window {}", getTitle());
 
 		this.container = new ComponentTypeWrapper(this.dGUIType.getContainer());
 		this.container.setWindow(this);

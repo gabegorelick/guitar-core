@@ -22,8 +22,10 @@ package edu.umd.cs.guitar.event;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.umd.cs.guitar.model.GComponent;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * Abstract class for all GUITAR events requiring to run in a separate thread.
@@ -34,6 +36,8 @@ import edu.umd.cs.guitar.util.GUITARLog;
  * @author <a href="mailto:baonn@cs.umd.edu"> Bao Nguyen </a>
  */
 public abstract class GThreadEvent implements GEvent {
+	
+	private static Logger logger = LoggerFactory.getLogger(GThreadEvent.class);
 
 	/**
      * 
@@ -121,7 +125,7 @@ public abstract class GThreadEvent implements GEvent {
 		@Override
 		public void uncaughtException(Thread t, Throwable e) {
 
-			GUITARLog.log.error(this.getName() + " uncaught Exception!!!", e);
+			logger.error("Uncaught exception in thread {}", t, e);
 			throw (RuntimeException) e;
 		}
 	}

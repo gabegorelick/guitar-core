@@ -33,7 +33,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -59,7 +60,6 @@ import edu.umd.cs.guitar.model.wrapper.PropertyTypeWrapper;
 import edu.umd.cs.guitar.replayer.monitor.GTestMonitor;
 import edu.umd.cs.guitar.replayer.monitor.TestStepEndEventArgs;
 import edu.umd.cs.guitar.replayer.monitor.TestStepStartEventArgs;
-import edu.umd.cs.guitar.util.GUITARLog;
 
 /**
  * 
@@ -72,6 +72,8 @@ import edu.umd.cs.guitar.util.GUITARLog;
  */
 public class Replayer {
 
+	private static final Logger logger = LoggerFactory.getLogger(Replayer.class);
+	
 	/**
 	 * Test case data
 	 */
@@ -80,9 +82,6 @@ public class Replayer {
 	// Test Monitor
 	private GReplayerMonitor monitor;
 	private List<GTestMonitor> lTestMonitor = new ArrayList<GTestMonitor>();
-
-	// Log
-	Logger log = GUITARLog.log;
 
 	// Secondary input
 	private GUIStructureWrapper guiStructureAdapter;
@@ -127,21 +126,6 @@ public class Replayer {
 	 * 
 	 * @param tc
 	 *            input test case
-	 * @param log
-	 *            log object
-	 */
-	@Deprecated
-	public Replayer(TestCase tc, Logger log) {
-		super();
-		this.tc = tc;
-		this.log = log;
-	}
-
-	/**
-	 * Constructor for the replayer
-	 * 
-	 * @param tc
-	 *            input test case
 	 */
 	@Deprecated
 	public Replayer(TestCase tc) {
@@ -156,28 +140,19 @@ public class Replayer {
 	 * 
 	 */
 	public void execute() throws ComponentNotFound {
-		// 
 		try {
 			monitor.setUp();
-
-			log.info("Connecting to application...");
 			monitor.connectToApplication();
-
-			log.info("Application is connected.");
 
 			// Monitor before the test case
 			for (GTestMonitor monitor : lTestMonitor) {
 				monitor.init();
 			}
 
-			log.info("Executing test case");
-			log.info("" + tc.getStep().size());
-
 			List<StepType> lSteps = tc.getStep();
 			int nStep = lSteps.size();
 
 			for (int i = 0; i < nStep; i++) {
-				log.info("---------------------");
 				StepType step = lSteps.get(i);
 				executeStep(step);
 			}
@@ -217,7 +192,6 @@ public class Replayer {
 
 		// Events
 		String sEventID = step.getEventId();
-		GUITARLog.log.info("EventID: " + sEventID);
 
 		// Get widget ID and actions
 		// String sWidgetID = getWidgetID("WidgetId", sEventID);
@@ -235,30 +209,22 @@ public class Replayer {
 		}
 
 		if (sWidgetID == null) {
-			GUITARLog.log.error("Component ID not found");
+			logger.error("Component ID {} not found", sEventID);
 			throw new ComponentNotFound();
 		} else if (sAction == null) {
-			GUITARLog.log.error("Action not found");
+			logger.error("Action not found");
 			throw new ComponentNotFound();
 		}
 
 		String sWindowID = getWindowName(sWidgetID);
 
 		if (sWindowID == null) {
-			GUITARLog.log.error("Window Title not found");
+			logger.error("Window Title not found");
 			throw new ComponentNotFound();
 		}
 
-		GUITARLog.log.info("Window Title: *" + sWindowID + "*");
-		GUITARLog.log.info("Widget ID: *" + sWidgetID + "*");
-		GUITARLog.log.info("");
-
-		GUITARLog.log.info("Finding window *" + sWindowID + "*....");
-
 		// TODO: Change this method to a fuzzy matching
 		GWindow gWindow = monitor.getWindow(sWindowID);
-		GUITARLog.log.info("FOUND");
-		GUITARLog.log.info("");
 
 		ComponentTypeWrapper comp = guiStructureAdapter
 				.getComponentFromID(sWidgetID);
@@ -275,30 +241,17 @@ public class Replayer {
 
 		GComponent containter = gWindow.getContainer();
 
-		GUITARLog.log.info("Finding widget *" + sWidgetID + "*....");
-
-		// GUITARLog.log.debug("Componnent signature: ");
-		// for (PropertyTypeWrapper p : IDAdapter) {
-		// GUITARLog.log.debug(p.toString());
-		// }
-
 		GComponent gComponent = containter.getFirstChild(IDAdapter);
 
 		if (gComponent == null)
 			throw new ComponentNotFound();
 
-		GUITARLog.log.info("FOUND");
-		GUITARLog.log.info("Widget Title: *" + gComponent.getTitle() + "*");
-		GUITARLog.log.info("");
 		if (!gComponent.isEnable())
 			throw new ComponentDisabled();
 
 		// Actions
 		GEvent gEvent = monitor.getAction(sAction);
 		List<String> parameters = step.getParameter();
-
-		GUITARLog.log.info("Action: *" + sAction);
-		GUITARLog.log.info("");
 
 		// Optional data
 		AttributesType optional = comp.getDComponentType().getOptional();
@@ -345,20 +298,22 @@ public class Replayer {
 		XPathExpression expr;
 		Object result;
 		NodeList nodes;
+		
+		String xpathExpression = "/GUIStructure/GUI[Container//Property[Name=\""
+				+ GUITARConstants.ID_TAG_NAME
+				+ "\" and Value=\""
+				+ sWidgetID
+				+ "\"]]/Window/Attributes/Property[Name=\""
+				+ GUITARConstants.TITLE_TAG_NAME + "\"]/Value/text()";
+		
 		try {
-			String xpathExpression = "/GUIStructure/GUI[Container//Property[Name=\""
-					+ GUITARConstants.ID_TAG_NAME
-					+ "\" and Value=\""
-					+ sWidgetID
-					+ "\"]]/Window/Attributes/Property[Name=\""
-					+ GUITARConstants.TITLE_TAG_NAME + "\"]/Value/text()";
 			expr = xpath.compile(xpathExpression);
 			result = expr.evaluate(docGUI, XPathConstants.NODESET);
 			nodes = (NodeList) result;
 			if (nodes.getLength() > 0)
 				sWindowName = nodes.item(0).getNodeValue();
 		} catch (XPathExpressionException e) {
-			GUITARLog.log.error(e);
+			logger.error("Error evaluating XPath expression {}", xpathExpression, e);
 		}
 		return sWindowName;
 	}
